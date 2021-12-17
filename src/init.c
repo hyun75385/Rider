@@ -54,8 +54,8 @@ void InitMemorySet(void) {
 
 void InitBike(void) {
     Vecter zero ={0,0};
-    bike.pose.x = 100.0;
-    bike.pose.y = 800.0;
+    bike.pose.x = 900.0;
+    bike.pose.y = 100.0;
     bike.vel = zero;
     bike.acc = zero;
 
@@ -85,9 +85,6 @@ void InitBike(void) {
     bike.back.radius = 10;
     bike.back.min_d = 11;
     update_Tire(&bike);
-
-
-
     return;
 }
 

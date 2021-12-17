@@ -30,11 +30,11 @@ void RenderBikeBody(const BIKE *bike)
     for (int i = 0; i < 3; i++)
     {
         SDL_RenderDrawLine(app.renderer, (int)bike->body.pose[i].x, (int)bike->body.pose[i].y, (int)bike->body.pose[i + 1].x, (int)bike->body.pose[i + 1].y);
-        printf("%d : %f %f %f %f\n", i, bike->body.pose[i].x, bike->body.pose[i].y, bike->body.pose[i + 1].x, bike->body.pose[i + 1].y);
+        // printf("%d : %f %f %f %f\n", i, bike->body.pose[i].x, bike->body.pose[i].y, bike->body.pose[i + 1].x, bike->body.pose[i + 1].y);
     }
     int i = 3;
     SDL_RenderDrawLine(app.renderer, (int)bike->body.pose[3].x, (int)bike->body.pose[3].y, (int)bike->body.pose[0].x, (int)bike->body.pose[0].y);
-    printf("%d : %f %f %f %f\n", i, bike->body.pose[i].x, bike->body.pose[i].y, bike->body.pose[i + 1].x, bike->body.pose[i + 1].y);
+    // printf("%d : %f %f %f %f\n", i, bike->body.pose[i].x, bike->body.pose[i].y, bike->body.pose[i + 1].x, bike->body.pose[i + 1].y);
 
     return;
 }

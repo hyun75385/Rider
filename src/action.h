@@ -12,5 +12,7 @@ extern BIKE bike;
 void ActGame(void);
 void ActBike(void);
 void Updatepose(void);
+void physics(void);
+
 
 #endif

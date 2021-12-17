@@ -26,15 +26,15 @@
 #define PLAYER_HEIGHT 24    /**< 플레이어 객체 높이(픽셀)*/
 #define PLAYER_SPEED 0.1     /**< 가속도*/
 #define PLAYER_MAXSPEED 10   /**< 최대 속도*/
+#define PLAYER_ROT 0.001     /**< 가속도*/
+#define PLAYER_MAXROT 0.1   /**< 최대 속도*/
 
-#define BULLET_WIDTH 8      /**< 총알 객체 너비(픽셀)*/
-#define BULLET_HEIGHT 8     /**< 총알 객체 높이(픽셀)*/
-#define BULLET_SPEED 6      /**< 총알 객체 속도(단위시간당 이동량)*/
-#define NUM_BULLETS 16      /**< 총알 전체 갯수*/
 
-#define GRAVITY 0.1
+#define GRAVITY -0.01
 #define E 0.3 //충돌계수
 #define PI 3.14159265359
+
+#define abs(X) ((X>=0) ? (X) : (-X))
 
 #define FONTSIZE 20 /**< 출력할 문자열 폰트 크기*/
 typedef enum {false,true} bool;
