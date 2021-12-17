@@ -140,3 +140,4 @@ $ proj_dir$ ./dodger
  * draw: 게임이 진행 중일 땐 `DrawGame()`, 게임오버된 상태에서는 `DrawGameOver()`
  * show: `ShowWindow()`
  * delay: `SDL_Delay()`
+# Rider
