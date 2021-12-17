@@ -1,29 +1,4 @@
-/*
-Copyright (C) Seongjae Lee 2021
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-The author modified 2D Shoot'Em Up Tutorial by Parallel Realities (URL:
-https://www.parallelrealities.co.uk/tutorials/) [21 Oct 2021]
-*/
-
-/**
- @file      init.c
- @brief     무한 루프 진입 전 객체 및 SDL 요소 초기화를 위한 함수 정의
- @author    이성재 (seongjae.lee.1118@gmail.com)
-*/
 #include "init.h"
 
 void InitSDL(void) {
@@ -32,7 +7,7 @@ void InitSDL(void) {
         exit(1);
     }
 
-    app.window = SDL_CreateWindow("Dodge!", SDL_WINDOWPOS_UNDEFINED,
+    app.window = SDL_CreateWindow("Rider!", SDL_WINDOWPOS_UNDEFINED,
                                   SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
                                   SCREEN_HEIGHT, 0);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
@@ -72,48 +47,47 @@ void QuitTTF(void) {
 
 void InitMemorySet(void) {
     memset(&app, 0, sizeof(App));
-    memset(&game_over, 0, sizeof(Entity));
-    memset(&player, 0, sizeof(Entity));
-    memset(&bullet, 0, NUM_BULLETS * sizeof(Entity));
-    memset(&score_board, 0, sizeof(Text));
+    memset(&bike,0, sizeof(BIKE));
+    return;
+}
+
+
+void InitBike(void) {
+    Vecter zero ={0,0};
+    bike.pose.x = 100.0;
+    bike.pose.y = 800.0;
+    bike.vel = zero;
+    bike.acc = zero;
+
+    bike.theta2 = 0 ;
+    bike.theta = -1 * bike.theta2;
+    bike.omega =0.0;
+    bike.alpa = 0.0;
+
+    bike.body.offset = zero;
+    bike.body.min_d = 24.27447;
+    bike.body.r[0].x = -13;
+    bike.body.r[0].y = -20.5;
+    bike.body.r[1].x = 13;
+    bike.body.r[1].y = -20.5;
+    bike.body.r[2].x = 13;
+    bike.body.r[2].y = 9.5;
+    bike.body.r[3].x = -13;
+    bike.body.r[3].y = 9.5;
+    update_Body(&bike);
+
+    bike.front.offset.x = 23;
+    bike.front.offset.y = 9.5;
+    bike.front.radius = 10;
+    bike.front.min_d = 11;
+    bike.back.offset.x = -23;
+    bike.back.offset.y = 9.5;
+    bike.back.radius = 10;
+    bike.back.min_d = 11;
+    update_Tire(&bike);
+
+
 
     return;
 }
 
-void InitScoreBoard(void) {
-    score = 0;
-    /* Black */
-    score_board.color.r = 0;
-    score_board.color.g = 0;
-    score_board.color.b = 0;
-    score_board.color.a = 255;
-
-    score_board.pos.x = 420;
-    score_board.pos.y = 40;
-
-    return;
-}
-
-void InitPlayer(void) {
-    player.texture = IMG_LoadTexture(app.renderer, "./gfx/Player.png");
-    player.pos.x = SCREEN_WIDTH / 2;
-    player.pos.y = SCREEN_HEIGHT / 2;
-    player.health = 1;
-
-    return;
-}
-
-void InitBullet(void) {
-    for (int i = 0; i < NUM_BULLETS; i++) {
-        bullet[i].texture = IMG_LoadTexture(app.renderer, "./gfx/Bullet.png");
-        RandSpawnBullet(&bullet[i]);
-    }
-
-    return;
-}
-
-void InitGameOver(void) {
-    game_over.texture = IMG_LoadTexture(app.renderer, "./gfx/GameOver.png");
-    game_over.pos.x = 0;
-    game_over.pos.y = 0;
-}

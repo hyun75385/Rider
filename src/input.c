@@ -1,29 +1,4 @@
-/*
-Copyright (C) Seongjae Lee 2021
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-The author modified 2D Shoot'Em Up Tutorial by Parallel Realities (URL:
-https://www.parallelrealities.co.uk/tutorials/) [21 Oct 2021]
-*/
-
-/**
- @file      input.c
- @brief     키보드 입력 발생 시 처리하는 함수 정의
- @author    이성재 (seongjae.lee.1118@gmail.com)
- */
 #include "input.h"
 
 void GetInput(void) {
@@ -48,7 +23,6 @@ void GetInput(void) {
                 break;
         }
     }
-
     return;
 }
 
@@ -56,20 +30,8 @@ void ResponseKeyUp(SDL_KeyboardEvent *event) {
     if (event->repeat == 0) {
         SDL_Scancode key_input = event->keysym.scancode;
         switch (key_input) {
-            case SDL_SCANCODE_UP:
-                app.key_up = 0;
-                break;
-            case SDL_SCANCODE_DOWN:
-                app.key_down = 0;
-                break;
-            case SDL_SCANCODE_LEFT:
-                app.key_left = 0;
-                break;
-            case SDL_SCANCODE_RIGHT:
-                app.key_right = 0;
-                break;
-            case SDL_SCANCODE_R:
-                app.key_r = 0;
+            case SDL_SCANCODE_SPACE:
+                app.key_space = 0;
                 break;
         }
     }
@@ -81,20 +43,8 @@ void ResponseKeyDown(SDL_KeyboardEvent *event) {
     if (event->repeat == 0) {
         SDL_Scancode key_input = event->keysym.scancode;
         switch (key_input) {
-            case SDL_SCANCODE_UP:
-                app.key_up = 1;
-                break;
-            case SDL_SCANCODE_DOWN:
-                app.key_down = 1;
-                break;
-            case SDL_SCANCODE_LEFT:
-                app.key_left = 1;
-                break;
-            case SDL_SCANCODE_RIGHT:
-                app.key_right = 1;
-                break;
-            case SDL_SCANCODE_R:
-                app.key_r = 1;
+            case SDL_SCANCODE_SPACE:
+                app.key_space = 1;
                 break;
         }
     }

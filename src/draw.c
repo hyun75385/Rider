@@ -1,77 +1,81 @@
-/*
-Copyright (C) Seongjae Lee 2021
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-The author modified 2D Shoot'Em Up Tutorial by Parallel Realities (URL:
-https://www.parallelrealities.co.uk/tutorials/) [21 Oct 2021]
-*/
-
-/**
- @file      draw.c
- @brief     텍스쳐 렌더링을 수행하는 함수 정의
- @author    이성재 (seongjae.lee.1118@gmail.com)
-*/
 #include "draw.h"
 
-void ClearWindow(void) {
-    SDL_SetRenderDrawColor(app.renderer, 255, 255, 255, 255);
+void ClearWindow(void)
+{
+    SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, 0);
     SDL_RenderClear(app.renderer);
 
     return;
 }
 
-void ShowWindow(void) {
+void ShowWindow(void)
+{
     SDL_RenderPresent(app.renderer);
+    return;
+}
+
+void DrawGame(void)
+{
+
+    RenderBikeBody(&bike);
+    RenderTire(&bike);
 
     return;
 }
 
-void DrawGame(void) {
-
-    RenderEntity(&player);
-    for (int i = 0; i < NUM_BULLETS; i++) {
-        RenderEntity(&(bullet[i]));
+void RenderBikeBody(const BIKE *bike)
+{
+    SDL_SetRenderDrawColor(app.renderer, 100, 255, 255, 255);
+    for (int i = 0; i < 3; i++)
+    {
+        SDL_RenderDrawLine(app.renderer, (int)bike->body.pose[i].x, (int)bike->body.pose[i].y, (int)bike->body.pose[i + 1].x, (int)bike->body.pose[i + 1].y);
+        printf("%d : %f %f %f %f\n", i, bike->body.pose[i].x, bike->body.pose[i].y, bike->body.pose[i + 1].x, bike->body.pose[i + 1].y);
     }
-    RenderScoreBoard(&score_board);
+    int i = 3;
+    SDL_RenderDrawLine(app.renderer, (int)bike->body.pose[3].x, (int)bike->body.pose[3].y, (int)bike->body.pose[0].x, (int)bike->body.pose[0].y);
+    printf("%d : %f %f %f %f\n", i, bike->body.pose[i].x, bike->body.pose[i].y, bike->body.pose[i + 1].x, bike->body.pose[i + 1].y);
 
     return;
 }
 
-void DrawGameOver(void) {
+void RenderTire(const BIKE *bike)
+{
+    int old_x = bike->front.pose.x + bike->front.radius;
+    int old_y = bike->front.pose.y + 0;
+    double x2_d, y2_d;
+    int x1, y1, x2, y2;
+    // printf("%d %d %d %d\n",old_x,old_y,x2,y2);
+    SDL_SetRenderDrawColor(app.renderer, 255, 255, 255, 255);
+    for (int i = 0; i < 100; i++)
+    {
+        x1 = old_x;
+        y1 = old_y;
+        x2_d = bike->front.pose.x + bike->front.radius * cos(3.14 / 50 * (i + 1));
+        y2_d = bike->front.pose.y + bike->front.radius * sin(3.14 / 50 * (i + 1));
+        x2 = (int)x2_d;
+        y2 = (int)y2_d;
+        SDL_RenderDrawLine(app.renderer, x1, y1, x2, y2);
+        // printf("front %d %d %d %d\n",x1,y2,x2,y2);
 
-    RenderEntity(&game_over);
-    RenderScoreBoard(&score_board);
 
-    return;
-}
+        old_x = x2;
+        old_y = y2;
+    }
 
-void RenderEntity(Entity *object) {
-
-    SDL_QueryTexture(object->texture, NULL, NULL, &(object->pos.w),
-                     &(object->pos.h));
-    SDL_RenderCopy(app.renderer, object->texture, NULL, &(object->pos));
-
-    return;
-}
-
-void RenderScoreBoard(Text *object) {
-
-    SDL_QueryTexture(object->texture, NULL, NULL, &(object->pos.w),
-                     &(object->pos.h));
-    SDL_RenderCopy(app.renderer, object->texture, NULL, &(object->pos));
-
-    return;
+    old_x = bike->back.pose.x + bike->back.radius;
+    old_y = bike->back.pose.y + 0;
+    for (int i = 0; i < 100; i++)
+    {
+        x1 = old_x;
+        y1 = old_y;
+        x2_d = bike->back.pose.x + bike->back.radius * cos(3.14 / 50 * (i + 1));
+        y2_d = bike->back.pose.y + bike->back.radius * sin(3.14 / 50 * (i + 1));
+        x2 = (int)x2_d;
+        y2 = (int)y2_d;
+        SDL_RenderDrawLine(app.renderer, x1, y1, x2, y2);
+        // printf("back  %d %d %d %d\n",x1,y1,x2,y2);
+        old_x = x2;
+        old_y = y2;
+    }
 }

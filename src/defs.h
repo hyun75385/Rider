@@ -1,66 +1,3 @@
-/*
-Copyright (C) Seongjae Lee 2021
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-The author modified 2D Shoot'Em Up Tutorial by Parallel Realities (URL:
-https://www.parallelrealities.co.uk/tutorials/) [21 Oct 2021]
-*/
-
-/**
- @file      defs.h
- @brief     데이터타입 및 상수 정의
- @author    이성재 (seongjae.lee.1118@gmail.com)
-*/
-
-/** 
- @defgroup GlobalVariables
-
- 프로그램에서 사용하는 전역변수에 대해 설명한다.
-
- @defgroup Init
-
- Init 모듈은 main()에서 무한 루프가 실행되기 전에 전역 변수들과 SDL 요소들의
- 초기화를 수행하는 함수들이 정의되어 있다.
-
- @defgroup  Input
-
- Input 모듈은 키보드 입력에 반응하여 \ref app 에 저장된 입력 상태를 저장하는
- 변수를 바꾸는 역할을 수행한다.
-
- @defgroup  Action
-
- Action 모듈은 키보드 입력 상태, \ref player 와 \ref bullet 의 현재 위치, 그리고
- 현재 점수에 따라 Entity 구조체들의 상태를 변화시킨다.
-
- @defgroup  Draw
-
- Draw 모듈은 \ref Action 이 수행된 이후 상태가 변경된 \ref player , \ref bullet
- , \ref score_board 를 화면에 렌더링시켜주는 역할을 수행하는 함수들이 정의되어
- 있다.
-
- 그리고 \ref ClearWindow 와 \ref ShowWindow 는 각각 main() 내 무한 루프 처음과
- 끝에서 화면을 초기화하고 표시해주는 역할을 수행한다.
-
- @defgroup Utils
-
- Utils 모듈은 자주 사용하는 계산을 함수 형태로 구현한 모듈이다.
-
-
-*/
-
 #ifndef DEFS_H
 #define DEFS_H
 
@@ -79,57 +16,75 @@ https://www.parallelrealities.co.uk/tutorials/) [21 Oct 2021]
 #define FPS 60              /**< 게임 FPS*/
 #define BUFSIZE 1024        /**< 문자열 버퍼 크기*/
 
-#define SCREEN_WIDTH 640    /**< 화면 너비(픽셀)*/
-#define SCREEN_HEIGHT 480   /**< 화면 높이(픽셀)*/
+#define SCREEN_WIDTH 3000    /**< 화면 너비(픽셀)640*/
+#define SCREEN_HEIGHT 960   /**< 화면 높이(픽셀)960*/
+
+#define MAP_WIDTH 10000
+#define MAP_HEIGHT 960
 
 #define PLAYER_WIDTH 24     /**< 플레이어 객체 너비(픽셀)*/
 #define PLAYER_HEIGHT 24    /**< 플레이어 객체 높이(픽셀)*/
-#define PLAYER_SPEED 4      /**< 플레이어 객체 속도(단위시간당 이동량)*/
+#define PLAYER_SPEED 0.1     /**< 가속도*/
+#define PLAYER_MAXSPEED 10   /**< 최대 속도*/
 
 #define BULLET_WIDTH 8      /**< 총알 객체 너비(픽셀)*/
 #define BULLET_HEIGHT 8     /**< 총알 객체 높이(픽셀)*/
 #define BULLET_SPEED 6      /**< 총알 객체 속도(단위시간당 이동량)*/
 #define NUM_BULLETS 16      /**< 총알 전체 갯수*/
 
-#define FONTSIZE 20 /**< 출력할 문자열 폰트 크기*/
+#define GRAVITY 0.1
+#define E 0.3 //충돌계수
+#define PI 3.14159265359
 
-/*구조체 정의*/
-/**
- @brief  App: 프로그램 전체적으로 관리해야 하는 요소를 모아 놓은 구조체
-*/
+#define FONTSIZE 20 /**< 출력할 문자열 폰트 크기*/
+typedef enum {false,true} bool;
+
 typedef struct {
     SDL_Renderer *renderer; /**< 렌더링 관리를 위한 구조체*/
     SDL_Window *window;     /**< 창 관리를 위한 구조체*/
     TTF_Font *font;         /**< 폰트 관리를 위한 구조체*/
-    int key_up;             /**< 위 방향키가 눌린 상태를 저장하는 변수*/
-    int key_down;           /**< 아래 방향키가 눌린 상태를 저장하는 변수*/
-    int key_left;           /**< 왼쪽 방향키가 눌린 상태를 저장하는 변수*/
-    int key_right;          /**< 오른쪽 방향키가 눌린 상태를 저장하는 변수*/
-    int key_r;              /**< R키가 눌린 상태를 저장하는 변수*/
+    int key_space;             /**< 스페이스 키가 눌린 상태를 저장하는 변수*/
 } App;
 
-/**
- @brief  Entity: 게임 내에서 움직이는 물체를 구현하기 위한 구조체(주인공, 총알)
-*/
-typedef struct {
-    SDL_Rect pos;           /**< 직사각형 객체의 상태를 나타내기 위한 구조체
-                                여기에 객체의 좌표, 위치 저장*/
-    double theta;           /**< 총알-주인공 간 각도를 저장하는 변수*/
-    int health;             /**< 주인공의 체력 상태를 나타내는 변수 (생존 1, 사망 0)*/
-    SDL_Texture *texture;   /**< 텍스쳐를 담고 있는 구조체 (그림파일을 열어
-                                 텍스쳐에 저장)*/
-} Entity;
+typedef struct vecter{
+    double x;
+    double y;
+}Vecter;
 
-/**
- @brief  Text: 게임 내에 문자열을 표시할 경우 문자열을 나타내는 구조체(스코어보드)
-*/
-typedef struct {
-    SDL_Rect pos;           /**< 직사각형 객체의 상태를 나타내기 위한 구조체
-                                여기에 객체의 좌표, 위치 저장*/
-    SDL_Color color;        /**< 글씨 색깔을 저장하는 구조체*/
-    SDL_Surface *surface;   /**< 폰트 렌더링을 위해 필요한 구조체*/
-    SDL_Texture *texture;   /**< 텍스쳐를 담고 있는 구조체 (문자열을 surface로 만들고,
-                                그 후 texture에 저장)*/
-} Text;
+typedef struct circle
+{  
+    Vecter offset;
+    Vecter pose;
+    double radius;
+    double min_d; //for collaspe detect
+
+}Tire;
+
+typedef struct rect{
+    Vecter offset;
+    Vecter pose[4];
+    Vecter r[4];
+    double min_d;
+}RECT;
+
+
+typedef struct bike{
+    Vecter pose;
+    Vecter vel;
+    Vecter acc;
+    
+    double theta; //rad // for randering
+
+    double theta2;
+    double omega;
+    double alpa;
+
+
+    RECT body;
+    Tire front;
+    Tire back;
+
+}BIKE;
+
 
 #endif

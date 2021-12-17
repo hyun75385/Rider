@@ -1,30 +1,4 @@
-/*
-Copyright (C) Seongjae Lee 2021
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-The author modified 2D Shoot'Em Up Tutorial by Parallel Realities (URL:
-https://www.parallelrealities.co.uk/tutorials/) [21 Oct 2021]
-*/
-
-/**
- @file      input.h
- @brief     키보드 입력 발생 시 처리하는 함수 선언
- @author    이성재 (seongjae.lee.1118@gmail.com)
-
- */
 #ifndef INPUT_H
 #define INPUT_H
 
@@ -34,12 +8,10 @@ https://www.parallelrealities.co.uk/tutorials/) [21 Oct 2021]
 
 /* main.h에 정의된 전역 변수 사용 */
 extern App app;
-extern Entity player;
-extern Entity bullet[NUM_BULLETS];
-extern Entity game_over;
-extern Text score_board;
+extern BIKE bike;
 extern char score_text[BUFSIZE];
 extern int score;
+
 
 /**
  @brief 외부 입력을 받아 적절한 동작을 취하도록 한다.
