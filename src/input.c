@@ -26,6 +26,35 @@ void GetInput(void) {
     return;
 }
 
+
+void InitTTF(void) {
+    if (TTF_Init() < 0) {
+        printf("[ERROR] in InitTTF(): %s", SDL_GetError());
+        exit(1);
+    }
+
+    app.font = TTF_OpenFont("./ttf/LiberationSans-Regular.ttf", 20);
+
+    return;
+}
+
+void QuitSDL(int flag) {
+    SDL_DestroyRenderer(app.renderer);
+    SDL_DestroyWindow(app.window);
+    QuitTTF();
+    SDL_Quit();
+    exit(flag);
+
+    return;
+}
+
+void QuitTTF(void) {
+    TTF_CloseFont(app.font);
+    TTF_Quit();
+
+    return;
+}
+
 void ResponseKeyUp(SDL_KeyboardEvent *event) {
     if (event->repeat == 0) {
         SDL_Scancode key_input = event->keysym.scancode;

@@ -7,9 +7,8 @@
 /* main.h에 정의된 전역 변수 사용 */
 extern App app;
 extern BIKE bike;
-
-extern char score_text[BUFSIZE];
-extern int score;
+extern Feature ** flist;
+extern int fnum;
 
 void update_Tire(BIKE *bike);
 void update_Body(BIKE *bike);

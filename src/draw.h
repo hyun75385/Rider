@@ -8,9 +8,8 @@
 /* main.h에 정의된 전역 변수 사용 */
 extern App app;
 extern BIKE bike;
-extern char score_text[BUFSIZE];
-extern int score;
-
+extern Feature ** flist;
+extern int fnum;
 void ClearWindow(void);
 
 void ShowWindow(void);
@@ -22,6 +21,7 @@ void DrawGameOver(void);
 
 void RenderTire(const BIKE * bike);
 void RenderBikeBody(const BIKE *bike);
+void RenderFeature_0(const Feature * f);
 
 
 #endif

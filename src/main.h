@@ -19,6 +19,7 @@ int score;                      /**< 게임 스코어*/
 
 /// @ingroup GlobalVariables
 BIKE bike;                        /**< 바이크의 속성을 설명하는 BIKE형 구조체 > */
-
+/// @ingroup GlobalVariables
+Feature ** flist;
 
 #endif

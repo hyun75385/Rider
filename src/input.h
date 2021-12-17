@@ -9,9 +9,8 @@
 /* main.h에 정의된 전역 변수 사용 */
 extern App app;
 extern BIKE bike;
-extern char score_text[BUFSIZE];
-extern int score;
-
+extern Feature ** flist;
+extern int fnum;
 
 /**
  @brief 외부 입력을 받아 적절한 동작을 취하도록 한다.

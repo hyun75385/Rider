@@ -9,32 +9,20 @@
 /* main.h에 정의된 전역 변수 사용 */
 extern BIKE bike;
 extern App app;
+extern Feature ** flist;
+extern int fnum;
 
 
 
 void InitSDL(void);
-
-void InitTTF(void);
-
-
 void QuitSDL(int flag);
-
-void QuitTTF(void);
-
-
 void InitMemorySet(void);
-
-
-void InitScoreBoard(void);
-
-
-void InitPlayer(void);
-
-
-void InitGameOver(void);
-
+void InitTTF(void);
+void QuitTTF(void);
 
 void InitBike(void);
 void InitWall(void);
+void InitFeature(void);
+
 
 #endif

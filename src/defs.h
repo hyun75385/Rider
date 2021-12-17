@@ -19,6 +19,8 @@
 #define SCREEN_WIDTH 3000    /**< 화면 너비(픽셀)640*/
 #define SCREEN_HEIGHT 960   /**< 화면 높이(픽셀)960*/
 
+#define FEATURENUM 10
+
 #define MAP_WIDTH 10000
 #define MAP_HEIGHT 960
 
@@ -30,11 +32,11 @@
 #define PLAYER_MAXROT 0.1   /**< 최대 속도*/
 
 
-#define GRAVITY -0.01
+#define GRAVITY -0.1
 #define E 0.3 //충돌계수
 #define PI 3.14159265359
 
-#define abs(X) ((X>=0) ? (X) : (-X))
+#define abs(X) (((X)>=0) ? (X) : (-(X)))
 
 #define FONTSIZE 20 /**< 출력할 문자열 폰트 크기*/
 typedef enum {false,true} bool;
@@ -50,6 +52,7 @@ typedef struct vecter{
     double x;
     double y;
 }Vecter;
+
 
 typedef struct circle
 {  
@@ -87,4 +90,10 @@ typedef struct bike{
 }BIKE;
 
 
+typedef struct feature{
+    int dim;
+    Vecter pose;
+    double  value[4]; //계수 저장
+    double limit[2]; //x1,x2저장
+}Feature;
 #endif

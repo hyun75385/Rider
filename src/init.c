@@ -1,8 +1,10 @@
 
 #include "init.h"
 
-void InitSDL(void) {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+void InitSDL(void)
+{
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
         printf("[ERROR] in InitSDL(): %s", SDL_GetError());
         exit(1);
     }
@@ -17,51 +19,26 @@ void InitSDL(void) {
     return;
 }
 
-void InitTTF(void) {
-    if (TTF_Init() < 0) {
-        printf("[ERROR] in InitTTF(): %s", SDL_GetError());
-        exit(1);
-    }
 
-    app.font = TTF_OpenFont("./ttf/LiberationSans-Regular.ttf", 20);
-
-    return;
-}
-
-void QuitSDL(int flag) {
-    SDL_DestroyRenderer(app.renderer);
-    SDL_DestroyWindow(app.window);
-    QuitTTF();
-    SDL_Quit();
-    exit(flag);
-
-    return;
-}
-
-void QuitTTF(void) {
-    TTF_CloseFont(app.font);
-    TTF_Quit();
-
-    return;
-}
-
-void InitMemorySet(void) {
+void InitMemorySet(void)
+{
     memset(&app, 0, sizeof(App));
-    memset(&bike,0, sizeof(BIKE));
+    memset(&bike, 0, sizeof(BIKE));
+    memset(&flist, 0, sizeof(Feature **));
     return;
 }
 
-
-void InitBike(void) {
-    Vecter zero ={0,0};
-    bike.pose.x = 900.0;
+void InitBike(void)
+{
+    Vecter zero = {0, 0};
+    bike.pose.x = 100.0;
     bike.pose.y = 100.0;
     bike.vel = zero;
     bike.acc = zero;
 
-    bike.theta2 = 0 ;
+    bike.theta2 = 0;
     bike.theta = -1 * bike.theta2;
-    bike.omega =0.0;
+    bike.omega = 0.0;
     bike.alpa = 0.0;
 
     bike.body.offset = zero;
@@ -88,3 +65,30 @@ void InitBike(void) {
     return;
 }
 
+void InitFeature(void)
+{
+    int i = 0;
+    Feature *tmp;
+    tmp = malloc(sizeof(Feature *) * FEATURENUM);
+    if (tmp != NULL)
+        flist = (Feature **) tmp;
+    for (i = 0; i < FEATURENUM; i++)
+    {
+        tmp = malloc(sizeof(Feature));
+        if (tmp != NULL)
+            flist[i] = (Feature *)tmp;
+        else
+            exit(0);
+    }
+    for (i = 0; i < FEATURENUM; i++)
+    {   
+        printf("%d ",i);
+        flist[i]->dim=0;
+        flist[i]->value[0] = 800;
+        flist[i]->limit[0] = 100*i;
+        flist[i]->limit[1] = 100*(i+1);
+        flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
+        flist[i]->pose.y = 1000;
+    }
+    printf("\n");
+}

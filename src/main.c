@@ -17,6 +17,8 @@ int main(void) {
     InitMemorySet();
     InitSDL();
     InitBike();
+    InitFeature();
+
 
 
     /* 2. 프로그램 무한 루프 */
