@@ -5,7 +5,9 @@ bool contact_state = false; //뒷바퀴 지면 닿는지 여부
 int inter = 0;              //index
 
 int collapse = 0;
+int fcrash = 0;
 Crash crashs[10];
+Crash finalcrash[10];
 
 void ActGame(void)
 {
@@ -19,12 +21,15 @@ void ActGame(void)
 }
 
 void physics(void)
-{
+{   
+    bool flag;
+    fcrash = 0;
     collapse = 0;
     bike.acc.y = -GRAVITY;
     contact_state = false;
     inter = closestFeature();
-    if(inter==0){
+    if (inter == 0)
+    {
         detect_contact(flist[inter]);
         detect_contact(flist[inter + 1]);
     }
@@ -35,14 +40,40 @@ void physics(void)
         if (inter < FEATURENUM - 1)
             detect_contact(flist[inter + 1]);
     }
+
+    for (int i = 0; i < collapse; i++)
+    {
+        flag = true;
+        for (int j = 0; j < collapse; j++)
+        {
+            if(i==j)
+                continue;
+            if (crashs[i].part == crashs[j].part && issameVec(&crashs[i].normal, &crashs[j].normal))
+            {
+                flag = false;
+                if (crashs[i].iner > crashs[j].iner)
+                {
+                    finalcrash[fcrash++] = crashs[i];
+                    break;
+                }
+            }
+        }
+        if (flag)
+        {
+            finalcrash[fcrash++] = crashs[i];
+        }
+    }
+
+    for (int i = 0; i < fcrash; i++)
+    {
+        printf("part : %d iner : %f, pose x : %.1f y : %.1f, normal x : %.10f, normal y : %.10f\n",finalcrash[i].part, finalcrash[i].iner, finalcrash[i].pose.x, finalcrash[i].pose.y, finalcrash[i].normal.x, finalcrash[i].normal.y);
+    }
+    printf("\n");
+
     if (contact_state)
     {
         bike.vel.y = 0;
         return;
-    }
-    for(int i=0;i<collapse;i++){
-        printf("%d // ",i);
-        printf("iner : %f, pose x : %f y : %f, normal x : %f, normal y : %f\n",crashs[collapse].iner,crashs[collapse].pose.x,crashs[collapse].pose.y,crashs[collapse].normal.x,crashs[collapse].normal.y);
     }
 
     //change vel
@@ -169,10 +200,11 @@ double cal_crash_tire(double x, const Feature *f, const Tire *tire)
     iner_pro = normal.x * green.x + normal.y * green.y;
     if (iner_pro < 0)
     {
-        collapse++;
         crashs[collapse].iner = iner_pro;
         crashs[collapse].normal = normal;
         crashs[collapse].pose = red_brown;
+        crashs[collapse].part = tire->part;
+        collapse++;
     }
     return iner_pro;
 }
@@ -183,7 +215,7 @@ double cal_y(double x, const Feature *f)
     double y = 0;
     for (int i = f->dim; i > -1; i--)
     {
-        y += pow(x-f->limit[0], i) * f->value[i];
+        y += pow(x - f->limit[0], i) * f->value[i];
     }
     return y;
 }
@@ -194,7 +226,7 @@ double cal_diff(double x, const Feature *f) //기울기 계산
     double y = 0;
     for (int i = f->dim - 1; i > -1; i--)
     {
-        y += pow(x-f->limit[0], i) * f->value[i] * (i + 1);
+        y += pow(x - f->limit[0], i) * f->value[i] * (i + 1);
     }
     return y;
 }
@@ -208,14 +240,14 @@ Vecter cal_normal(double diff)
         n.x = 0;
         return n;
     }
-    n.y = - 1 / sqrt(1 + diff * diff);     //y는 무조건 음의 방향(y축방향 반대)
+    n.y = -1 / sqrt(1 + diff * diff);    //y는 무조건 음의 방향(y축방향 반대)
     n.x = -diff / sqrt(1 + diff * diff); //x는 음의방향일 수도
     return n;
 }
 
 double cal_circle_y(double x, const Tire *tire)
 {
-    return tire->pose.y + sqrt(tire->radius * tire->radius + pow((tire->pose.x - x), 2));//아래를 선택
+    return tire->pose.y + sqrt(tire->radius * tire->radius + pow((tire->pose.x - x), 2)); //아래를 선택
 }
 
 void ActBike(void)

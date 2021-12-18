@@ -40,6 +40,7 @@
 
 #define FONTSIZE 20 /**< 출력할 문자열 폰트 크기*/
 typedef enum {false,true} bool;
+typedef enum {front,back,body} part_num;
 
 typedef struct {
     SDL_Renderer *renderer; /**< 렌더링 관리를 위한 구조체*/
@@ -60,6 +61,7 @@ typedef struct circle
     Vecter pose;
     double radius;
     double min_d; //for collaspe detect
+    part_num part;
 
 }Tire;
 
@@ -68,6 +70,7 @@ typedef struct rect{
     Vecter pose[4];
     Vecter r[4];
     double min_d;
+    part_num part;
 }RECT;
 
 
@@ -101,5 +104,6 @@ typedef struct crash{
     double iner;
     Vecter normal;
     Vecter pose;
+    part_num part;
 }Crash;
 #endif

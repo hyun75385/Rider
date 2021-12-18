@@ -28,3 +28,7 @@ double distance(const Vecter *p1, const Vecter *p2)
 double size(const Vecter* v){
     return (sqrt(v->x* v->x + v->y * v->y));
 }
+
+bool issameVec(const Vecter * v1, const Vecter * v2){
+    return (bool) (abs(v1->x-v2->x)<0.000001 && abs(v1->y - v2->y)<0.000001);
+}

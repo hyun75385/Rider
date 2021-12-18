@@ -14,5 +14,6 @@ void update_Tire(BIKE *bike);
 void update_Body(BIKE *bike);
 double distance(const Vecter *p1, const Vecter *p2);
 double size(const Vecter* v);
+bool issameVec(const Vecter * v1, const Vecter * v2);
 
 #endif
