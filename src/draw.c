@@ -21,7 +21,12 @@ void DrawGame(void)
     RenderBikeBody(&bike);
     RenderTire(&bike);
     for(int i=0;i<FEATURENUM;i++){
-        RenderFeature_0(flist[i]);
+        if(flist[i]->dim==0)
+            RenderFeature_0(flist[i]);
+        if(flist[i]->dim==1)
+            RenderFeature_1(flist[i]);
+        if(flist[i]->dim==2)
+            RenderFeature_2(flist[i]);
     }
     return;
 }
@@ -84,5 +89,21 @@ void RenderTire(const BIKE *bike)
 
 void RenderFeature_0(const Feature * f){ // 하나만 그림
     SDL_RenderDrawLine(app.renderer, f->limit[0] , f->value[0], f->limit[1], f->value[0]);
+}
 
+void RenderFeature_1(const Feature *f)
+{ // 하나만 그림
+    SDL_RenderDrawLine(app.renderer, f->limit[0], f->value[0], f->limit[1], f->value[1] * (f->limit[1] - f->limit[0]) + f->value[0]);
+}
+
+void RenderFeature_2(const Feature *f)
+{ // 하나만 그림
+    int oldx = f->limit[0], oldy= f->value[0];
+    int y = 0;
+    for(int x = f->limit[0]+1; x<f->limit[1];x++){
+        y = f->value[2]*pow(x-f->limit[0],2)+ f->value[1]*pow(x-f->limit[0],1)+ f->value[0];
+        SDL_RenderDrawLine(app.renderer,oldx,oldy,x,y);
+        oldx = x;
+        oldy = y;
+    }
 }

@@ -22,6 +22,8 @@ void DrawGameOver(void);
 void RenderTire(const BIKE * bike);
 void RenderBikeBody(const BIKE *bike);
 void RenderFeature_0(const Feature * f);
+void RenderFeature_1(const Feature * f);
+void RenderFeature_2(const Feature *f);
 
 
 #endif

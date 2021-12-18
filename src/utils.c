@@ -5,8 +5,8 @@ void update_Tire(BIKE *bike)
 {
     bike->front.pose.x = bike->pose.x + cos(bike->theta) * (bike->front.offset.x) - sin(bike->theta) * (bike->front.offset.y);
     bike->front.pose.y = bike->pose.y + sin(bike->theta) * (bike->front.offset.x) + cos(bike->theta) * (bike->front.offset.y);
-    bike->back.pose.x = bike->pose.x + cos(bike->theta) * (bike->back.offset.x) - sin(bike->theta) * (bike->back.offset.y);
-    bike->back.pose.y = bike->pose.y + sin(bike->theta) * (bike->back.offset.x) + cos(bike->theta) * (bike->back.offset.y);
+    bike->back.pose.x  = bike->pose.x + cos(bike->theta) * (bike->back.offset.x)  - sin(bike->theta) * (bike->back.offset.y);
+    bike->back.pose.y  = bike->pose.y + sin(bike->theta) * (bike->back.offset.x)  + cos(bike->theta) * (bike->back.offset.y);
     return;
 }
 
