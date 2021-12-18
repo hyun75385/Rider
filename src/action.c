@@ -23,6 +23,7 @@ void ActGame(void)
 void physics(void)
 {   
     bool flag;
+    Vecter adjust;
     fcrash = 0;
     collapse = 0;
     bike.acc.y = -GRAVITY;
@@ -70,14 +71,32 @@ void physics(void)
     }
     printf("\n");
 
+    adjust = adjust_pose();
+
     if (contact_state)
     {
         bike.vel.y = 0;
-        return;
+
     }
 
     //change vel
+    printf("x,y %f %f \n",adjust.x,adjust.y);
+    bike.pose.x += adjust.x;
+    bike.pose.y += adjust.y;
     bike.vel.y += bike.acc.y;
+}
+
+Vecter adjust_pose(void){
+    Vecter max={0,0}; //조정 값은 무조건 양수
+    for (int i = 0; i < fcrash; i++){
+        if((finalcrash[i].iner*finalcrash[i].normal.x) > max.x){
+            max.x = -finalcrash[i].iner*finalcrash[i].normal.x;
+        }
+        if((finalcrash[i].iner*finalcrash[i].normal.y) > max.y){
+            max.y = -finalcrash[i].iner*finalcrash[i].normal.y;
+        }
+    }
+    return max;
 }
 
 int closestFeature(void)

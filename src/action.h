@@ -22,6 +22,7 @@ double cal_y(double x, const Feature *f);
 double cal_diff(double x, const Feature *f);
 Vecter cal_normal(double diff);
 double cal_circle_y(double x, const Tire * tire);
+Vecter adjust_pose(void);
 
 
 #endif
