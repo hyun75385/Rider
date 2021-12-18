@@ -96,4 +96,10 @@ typedef struct feature{
     double  value[4]; //계수 저장
     double limit[2]; //x1,x2저장
 }Feature;
+
+typedef struct crash{
+    double iner;
+    Vecter normal;
+    Vecter pose;
+}Crash;
 #endif

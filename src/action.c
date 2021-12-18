@@ -5,13 +5,11 @@ bool contact_state = false; //뒷바퀴 지면 닿는지 여부
 int inter = 0;              //index
 
 int collapse = 0;
-Vecter normals[10];
-double iner_p[10];
+Crash crashs[10];
 
 void ActGame(void)
 {
     contact_state = false;
-    collapse = 0;
     // physics (Collapse & gravity) & update speed acc omega alpa
     physics();
     ActBike(); //update speed, omega
@@ -22,7 +20,9 @@ void ActGame(void)
 
 void physics(void)
 {
+    collapse = 0;
     bike.acc.y = -GRAVITY;
+    contact_state = false;
     inter = closestFeature();
     if(inter==0){
         detect_contact(flist[inter]);
@@ -30,7 +30,6 @@ void physics(void)
     }
     else
     {
-        contact_state = false;
         detect_contact(flist[inter - 1]);
         detect_contact(flist[inter]);
         if (inter < FEATURENUM - 1)
@@ -41,6 +40,11 @@ void physics(void)
         bike.vel.y = 0;
         return;
     }
+    for(int i=0;i<collapse;i++){
+        printf("%d // ",i);
+        printf("iner : %f, pose x : %f y : %f, normal x : %f, normal y : %f\n",crashs[collapse].iner,crashs[collapse].pose.x,crashs[collapse].pose.y,crashs[collapse].normal.x,crashs[collapse].normal.y);
+    }
+
     //change vel
     bike.vel.y += bike.acc.y;
 }
@@ -94,7 +98,7 @@ void detect_contact(const Feature *f)
     if (min_x != -1)
     { //update되었다는것
         iner1 = cal_crash_tire(min_x, f, &bike.front);
-        printf("iner1 %f max x %f distance %f \n", iner1, min_x, min_d);
+        // printf("iner1 %f max x %f distance %f \n", iner1, min_x, min_d);
     }
     boundary[0] = -1;
     boundary[1] = -1;
@@ -127,7 +131,7 @@ void detect_contact(const Feature *f)
     { //update되었다는것
         iner2 = cal_crash_tire(min_x, f, &bike.back);
         contact_state = true;
-        printf("iner2 %f max x %f distance %f \n", iner2, min_x, min_d);
+        // printf("iner2 %f max x %f distance %f \n", iner2, min_x, min_d);
     }
 }
 
@@ -166,8 +170,9 @@ double cal_crash_tire(double x, const Feature *f, const Tire *tire)
     if (iner_pro < 0)
     {
         collapse++;
-        normals[collapse] = normal;
-        iner_p[collapse] = iner_pro;
+        crashs[collapse].iner = iner_pro;
+        crashs[collapse].normal = normal;
+        crashs[collapse].pose = red_brown;
     }
     return iner_pro;
 }
