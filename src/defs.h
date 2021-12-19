@@ -19,28 +19,29 @@
 #define SCREEN_WIDTH 3000    /**< 화면 너비(픽셀)640*/
 #define SCREEN_HEIGHT 960   /**< 화면 높이(픽셀)960*/
 
-#define FEATURENUM 5
+#define FEATURENUM 10
 
 #define MAP_WIDTH 10000
 #define MAP_HEIGHT 960
 
 #define PLAYER_WIDTH 24     /**< 플레이어 객체 너비(픽셀)*/
 #define PLAYER_HEIGHT 24    /**< 플레이어 객체 높이(픽셀)*/
-#define PLAYER_SPEED 0.1     /**< 가속도*/
-#define PLAYER_MAXSPEED 10   /**< 최대 속도*/
-#define PLAYER_ROT 0.001     /**< 가속도*/
+#define PLAYER_SPEED 0.05     /**< 가속도*/
+#define PLAYER_MAXSPEED 5   /**< 최대 속도*/
+#define PLAYER_ROT 0.01     /**< 가속도*/
 #define PLAYER_MAXROT 0.1   /**< 최대 속도*/
 
 
 #define GRAVITY -0.1
-#define E 0.3 //충돌계수
+#define E 0.2 //충돌계수
 #define PI 3.14159265359
+#define GAP 5
 
 #define abs(X) (((X)>=0) ? (X) : (-(X)))
 
 #define FONTSIZE 20 /**< 출력할 문자열 폰트 크기*/
 typedef enum {false,true} bool;
-typedef enum {front,back,body} part_num;
+typedef enum {front=1,back,body} part_num;
 
 typedef struct {
     SDL_Renderer *renderer; /**< 렌더링 관리를 위한 구조체*/
@@ -59,6 +60,7 @@ typedef struct circle
 {  
     Vecter offset;
     Vecter pose;
+    Vecter vel;
     double radius;
     double min_d; //for collaspe detect
     part_num part;
@@ -69,6 +71,7 @@ typedef struct rect{
     Vecter offset;
     Vecter pose[4];
     Vecter r[4];
+    Vecter vel;
     double min_d;
     part_num part;
 }RECT;

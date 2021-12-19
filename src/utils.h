@@ -15,5 +15,13 @@ void update_Body(BIKE *bike);
 double distance(const Vecter *p1, const Vecter *p2);
 double size(const Vecter* v);
 bool issameVec(const Vecter * v1, const Vecter * v2);
+void update_tire_vel(BIKE *bike);
+Vecter vecter_minus(const Vecter * v1, const Vecter * v2);
+double CrossProduct(const Vecter *v1, const Vecter *v2);
+double InnerProduct(const Vecter *v1, const Vecter *v2);
+void update_Center(BIKE *bike);
+Vecter vecter_plus(const Vecter * v1, const Vecter * v2);
+Vecter vecter_mul(const Vecter * v1, double m);
+Vecter bounce(const Vecter * v1, const Vecter * normal);
 
 #endif

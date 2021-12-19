@@ -13,20 +13,24 @@ void ActGame(void)
 {
     contact_state = false;
     // physics (Collapse & gravity) & update speed acc omega alpa
+    printf("\ntire vel be %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
     physics();
+    printf("tire vel pe %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
     ActBike(); //update speed, omega
+    printf("tire vel ac  %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
     Updatepose();
+    printf("tire vel ud %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
+
 
     return;
 }
 
 void physics(void)
-{   
+{
     bool flag;
     Vecter adjust;
     fcrash = 0;
     collapse = 0;
-    bike.acc.y = -GRAVITY;
     contact_state = false;
     inter = closestFeature();
     if (inter == 0)
@@ -47,7 +51,7 @@ void physics(void)
         flag = true;
         for (int j = 0; j < collapse; j++)
         {
-            if(i==j)
+            if (i == j)
                 continue;
             if (crashs[i].part == crashs[j].part && issameVec(&crashs[i].normal, &crashs[j].normal))
             {
@@ -64,36 +68,82 @@ void physics(void)
             finalcrash[fcrash++] = crashs[i];
         }
     }
-
-    for (int i = 0; i < fcrash; i++)
-    {
-        printf("part : %d iner : %f, pose x : %.1f y : %.1f, normal x : %.10f, normal y : %.10f\n",finalcrash[i].part, finalcrash[i].iner, finalcrash[i].pose.x, finalcrash[i].pose.y, finalcrash[i].normal.x, finalcrash[i].normal.y);
-    }
-    printf("\n");
-
     adjust = adjust_pose();
-
-    if (contact_state)
-    {
-        bike.vel.y = 0;
-
-    }
-
     //change vel
-    printf("x,y %f %f \n",adjust.x,adjust.y);
-    bike.pose.x += adjust.x;
-    bike.pose.y += adjust.y;
-    bike.vel.y += bike.acc.y;
+
+    Force();
+    // printf("vel  %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
+
+    // bike.front.pose.x += bike.front.vel.x;
+    // bike.front.pose.y += bike.front.vel.y;
+    // bike.back.pose.x += bike.back.vel.x;
+    // bike.back.pose.y += bike.back.vel.y;
+    // bike.front.pose = vecter_plus(&bike.front.pose, &bike.front.vel);
+    // bike.back.pose = vecter_plus(&bike.back.pose, &bike.back.vel);
+    printf("pose %f %f %f %f\n", bike.front.pose.x, bike.front.pose.y, bike.back.pose.x, bike.back.pose.y);
+    printf("\n");
 }
 
-Vecter adjust_pose(void){
-    Vecter max={0,0}; //조정 값은 무조건 양수
+Vecter Force(void){
+    part_num count[4]={0};
+    Vecter tmp;
+    if(fcrash==0){ 
+        printf("in air\n");
+        bike.front.vel.y -= GRAVITY;
+        bike.back.vel.y -= GRAVITY;
+    }
     for (int i = 0; i < fcrash; i++){
-        if((finalcrash[i].iner*finalcrash[i].normal.x) > max.x){
-            max.x = -finalcrash[i].iner*finalcrash[i].normal.x;
+        if(count[finalcrash[i].part]==0){
+            count[finalcrash[i].part]=1;
+            if(finalcrash[i].part==front){
+                bike.front.vel = bounce(&bike.front.vel, &finalcrash[i].normal);
+                printf("normal %f %f\n",finalcrash[i].normal.x,finalcrash[i].normal.y);
+                bike.front.vel.x += finalcrash[i].normal.x * finalcrash[i].normal.y * GRAVITY ;
+                bike.front.vel.y -= finalcrash[i].normal.x * finalcrash[i].normal.x * GRAVITY ;
+                printf("gravity: %f %f \n",finalcrash[i].normal.x * finalcrash[i].normal.y * GRAVITY,finalcrash[i].normal.x * finalcrash[i].normal.x * GRAVITY);
+            }
+            else if(finalcrash[i].part==back){
+                bike.back.vel = bounce(&bike.back.vel, &finalcrash[i].normal);
+                bike.back.vel.x += finalcrash[i].normal.x * finalcrash[i].normal.y * GRAVITY ;
+                bike.back.vel.y -= finalcrash[i].normal.x * finalcrash[i].normal.x * GRAVITY ;
+            }
         }
-        if((finalcrash[i].iner*finalcrash[i].normal.y) > max.y){
-            max.y = -finalcrash[i].iner*finalcrash[i].normal.y;
+        else{
+            // printf("2secter detected\n");
+            if(finalcrash[i].part==front){
+                tmp = bounce(&bike.front.vel, &finalcrash[i].normal);
+        // bike.front.vel.x += tmp.x;
+                bike.front.vel.y += tmp.y;
+                bike.front.vel.x += tmp.x;
+                bike.front.vel.y += tmp.y;
+            }
+            else if(finalcrash[i].part==back){
+                tmp = bounce(&bike.back.vel, &finalcrash[i].normal);
+                bike.back.vel.x += tmp.x;
+                bike.back.vel.y += tmp.y;
+            }
+        }
+    }
+
+
+    
+}
+
+Vecter adjust_pose(void)
+{
+    Vecter max = {0, 0};
+    for (int i = 0; i < fcrash; i++)
+    {   
+        if(finalcrash[i].part==front){
+            bike.front.pose.x += (-finalcrash[i].iner - GAP) * finalcrash[i].normal.x;
+            bike.front.pose.y += (-finalcrash[i].iner - GAP) * finalcrash[i].normal.y;
+            // printf("adjust front : %f %f\n",(-finalcrash[i].iner - GAP) * finalcrash[i].normal.x,(-finalcrash[i].iner - GAP) * finalcrash[i].normal.y);
+        }
+        if(finalcrash[i].part==back){ 
+            bike.back.pose.x += (-finalcrash[i].iner - GAP) * finalcrash[i].normal.x;
+            bike.back.pose.y += (-finalcrash[i].iner - GAP) * finalcrash[i].normal.y;
+            // printf("adjust back : %f %f\n",(-finalcrash[i].iner - GAP) * finalcrash[i].normal.x,(-finalcrash[i].iner - GAP) * finalcrash[i].normal.y);
+
         }
     }
     return max;
@@ -147,12 +197,13 @@ void detect_contact(const Feature *f)
     }
     if (min_x != -1)
     { //update되었다는것
+        // printf("iner1 %f mins x %f mind %f \n", iner1, min_x, min_d);
         iner1 = cal_crash_tire(min_x, f, &bike.front);
-        // printf("iner1 %f max x %f distance %f \n", iner1, min_x, min_d);
     }
     boundary[0] = -1;
     boundary[1] = -1;
     min_x = -1;
+
     for (P.x = f->limit[0]; P.x < f->limit[1]; P.x += 1)
     {
         P.y = cal_y(P.x, f);
@@ -187,8 +238,9 @@ void detect_contact(const Feature *f)
 
 double cal_crash_tire(double x, const Feature *f, const Tire *tire)
 {
-    double diff = cal_diff(x, f), iner_pro = 0, a, b, c, y = cal_y(x, f);
+    double diff = cal_diff(x, f), inv_diff, iner_pro = 0, a, b, c, y = cal_y(x, f);
     Vecter normal = cal_normal(diff); // 보라색 벡터
+    printf("normal %f %f diff %f\n",normal.x,normal.y,diff);
     Vecter green, red_brown, circle1, circle2, point;
     point.x = x;
     point.y = y;
@@ -198,17 +250,22 @@ double cal_crash_tire(double x, const Feature *f, const Tire *tire)
         red_brown.y = cal_circle_y(x, tire);
     }
     else
-    {
-        a = pow(normal.x, 2) + 1;
-        b = -2 * tire->pose.x - 2 * pow(normal.x, 2) * x + 2 * normal.x * y - 2 * normal.x * tire->pose.y;
-        c = pow(tire->pose.x, 2) + normal.x * pow(x, 2) + 2 * normal.x * x * y - 2 * normal.x * tire->pose.y * x - 2 * tire->pose.y * y + pow(tire->pose.y, 2) - pow(tire->radius, 2) + pow(y, 2);
-        SDL_assert(b * b - 4 * a * c > 0);
-        // printf("a : %f b: %f c: %f sqrt : %f \n", a, b, c, sqrt(b * b - 4 * a * c));
+    {   
+        inv_diff = -1/diff;
+        a = pow(inv_diff, 2) + 1;
+        b = -2 * tire->pose.x - 2 * pow(inv_diff, 2) * x + 2 * inv_diff * y - 2 * inv_diff * tire->pose.y;
+        c = pow(tire->pose.x, 2) + pow(inv_diff,2) * pow(x, 2) - 2 * inv_diff * x * y + 2 * inv_diff * tire->pose.y * x -2*y* tire->pose.y  + pow(tire->pose.y, 2) - pow(tire->radius, 2) + pow(y, 2);
+
+        // printf("\na : %f b: %f c: %f  x : %f y : %f\n", a, b, c,x,y);
+        // printf("tire-> pose x %f y : %f inv_diff %f  \n",tire->pose.x,tire->pose.y, inv_diff);
+
+
+        SDL_assert(b * b - 4 * a * c >= 0);
         circle1.x = (-b + sqrt(b * b - 4 * a * c)) / (2 * a);
         circle1.y = cal_circle_y(circle1.x, tire);
         circle2.x = (-b - sqrt(b * b - 4 * a * c)) / (2 * a);
         circle2.y = cal_circle_y(circle2.x, tire);
-        // printf("1:  %f %f 2:   %f %f\n", circle1.x, circle1.y, circle2.x, circle2.y);
+        printf("1:  %f %f 2:   %f %f\n", circle1.x, circle1.y, circle2.x, circle2.y);
 
         red_brown = (distance(&circle1, &point) < distance(&circle2, &point)) ? circle1 : circle2;
     }
@@ -234,8 +291,9 @@ double cal_y(double x, const Feature *f)
     double y = 0;
     for (int i = f->dim; i > -1; i--)
     {
-        y += pow(x - f->limit[0], i) * f->value[i];
+        y += pow( x - f->limit[0], i) * f->value[i];
     }
+
     return y;
 }
 
@@ -243,9 +301,11 @@ double cal_diff(double x, const Feature *f) //기울기 계산
 {
     SDL_assert(f->dim <= 3);
     double y = 0;
+    if(x < f->limit[0])
+        x = f->limit[0];
     for (int i = f->dim - 1; i > -1; i--)
     {
-        y += pow(x - f->limit[0], i) * f->value[i] * (i + 1);
+        y += pow(x - f->limit[0], i) * f->value[i+1] * (i + 1);
     }
     return y;
 }
@@ -253,14 +313,14 @@ double cal_diff(double x, const Feature *f) //기울기 계산
 Vecter cal_normal(double diff)
 {
     Vecter n;
-    if (diff < 0.00000000001)
+    if (diff == 0)
     {
         n.y = -1;
         n.x = 0;
         return n;
     }
     n.y = -1 / sqrt(1 + diff * diff);    //y는 무조건 음의 방향(y축방향 반대)
-    n.x = -diff / sqrt(1 + diff * diff); //x는 음의방향일 수도
+    n.x = diff / sqrt(1 + diff * diff); //x는 음의방향일 수도
     return n;
 }
 
@@ -272,18 +332,21 @@ double cal_circle_y(double x, const Tire *tire)
 void ActBike(void)
 {
     if (contact_state)
-    {
+    {                
+        
+
         if (app.key_space)
         {
-            if (bike.vel.x * cos(bike.theta) >= 0 && size(&bike.vel) < PLAYER_MAXSPEED) //방향이 다를때
-            {
-                bike.vel.x += PLAYER_SPEED * cos(bike.theta);
-                bike.vel.y += PLAYER_SPEED * sin(bike.theta);
+            printf("act bike %f\n",bike.back.vel.x * cos(bike.theta));
+            if (bike.back.vel.x * cos(bike.theta) >= 0 && size(&bike.back.vel) < PLAYER_MAXSPEED) //방향이 다를때
+            {   
+                bike.back.vel.x += PLAYER_SPEED * cos(bike.theta);
+                bike.back.vel.y += PLAYER_SPEED * sin(bike.theta);
             }
-            else if (bike.vel.x * cos(bike.theta) <= 0)
+            else if (bike.back.vel.x * cos(bike.theta) < 0)
             {
-                bike.vel.x += PLAYER_SPEED * cos(bike.theta);
-                bike.vel.y += PLAYER_SPEED * sin(bike.theta);
+                bike.back.vel.x += PLAYER_SPEED * cos(bike.theta);
+                bike.back.vel.y += PLAYER_SPEED * sin(bike.theta);
             }
             // else { else시 그냥 속도 유지
             //     bike.vel.x+= PLAYER_SPEED * cos(bike.theta);
@@ -292,20 +355,20 @@ void ActBike(void)
         }
         if (!app.key_space)
         {
-            if (bike.vel.x * cos(bike.theta) >= 0 && size(&bike.vel) - PLAYER_SPEED > 0)
+            if (bike.back.vel.x * cos(bike.theta) >= 0 && size(&bike.back.vel) - PLAYER_SPEED > 0)
             {
-                bike.vel.x -= PLAYER_SPEED * cos(bike.theta);
-                bike.vel.y -= PLAYER_SPEED * sin(bike.theta);
+                bike.back.vel.x -= PLAYER_SPEED * cos(bike.theta);
+                bike.back.vel.y -= PLAYER_SPEED * sin(bike.theta);
             }
-            else if (bike.vel.x * cos(bike.theta) <= 0 && size(&bike.vel) - PLAYER_SPEED > 0)
+            else if (bike.back.vel.x * cos(bike.theta) <= 0 && size(&bike.back.vel) - PLAYER_SPEED > 0)
             { //방향이 다를때
-                bike.vel.x += PLAYER_SPEED * cos(bike.theta);
-                bike.vel.y += PLAYER_SPEED * sin(bike.theta);
+                bike.back.vel.x += PLAYER_SPEED * cos(bike.theta);
+                bike.back.vel.y += PLAYER_SPEED * sin(bike.theta);
             }
             else
             {
-                bike.vel.x = 0;
-                bike.vel.y = 0;
+                bike.back.vel.x = 0;
+                bike.back.vel.y = 0;
             }
         }
     }
@@ -341,12 +404,79 @@ void ActBike(void)
     return;
 }
 
+// void ActBike(void)
+// {
+//     if (contact_state)
+//     {
+//         if (app.key_space)
+//         {
+//             bike.back.vel.x += PLAYER_SPEED ;
+//         }
+//         if (!app.key_space)
+//         {
+//             if (bike.back.vel.x >= 0 && size(&bike.vel) - PLAYER_SPEED > 0)
+//             {
+//                 bike.back.vel.x -= PLAYER_SPEED ;
+//                 // bike.back.vel.y -= PLAYER_SPEED * sin(bike.theta);
+//             }
+//             else if (bike.back.vel.x  <= 0 && size(&bike.vel) - PLAYER_SPEED > 0)
+//             { //방향이 다를때
+//                 bike.back.vel.x += PLAYER_SPEED ;
+//                 // bike.back.vel.y += PLAYER_SPEED * sin(bike.theta);
+//             }
+//             else
+//             {
+//                 bike.back.vel.x = 0;
+//                 bike.back.vel.y = 0;
+//             }
+//         }
+//     }
+//     else
+//     {
+//         if (app.key_space)
+//         {
+//             if (bike.omega < PLAYER_MAXROT)
+//             {
+//                 bike.omega += PLAYER_ROT;
+//             }
+//             // else {
+//             //     bike.vel.x+= PLAYER_SPEED * cos(bike.theta);
+//             //     bike.vel.y+= PLAYER_SPEED * sin(bike.theta);
+//             // }
+//         }
+//         if (!app.key_space)
+//         {
+//             if (bike.omega > 0 && bike.omega - PLAYER_ROT > 0)
+//             {
+//                 bike.omega -= PLAYER_ROT;
+//             }
+//             else if (bike.omega < 0 && bike.omega + PLAYER_ROT < 0)
+//             {
+//                 bike.omega += PLAYER_ROT;
+//             }
+//             else
+//             {
+//                 bike.omega = 0;
+//             }
+//         }
+//     }
+//     return;
+// }
+
 void Updatepose(void)
 {
-    bike.pose.x += bike.vel.x;
-    bike.pose.y += bike.vel.y;
-    bike.theta2 += bike.omega;
+    // printf("tire vel be %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
+    update_tire_vel(&bike);
+    // printf("tire vel af  %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
+    bike.front.pose.x += bike.front.vel.x;
+    bike.front.pose.y += bike.front.vel.y;
+    bike.back.pose.x += bike.back.vel.x;
+    bike.back.pose.y += bike.back.vel.y;
+    // bike.theta2 += bike.omega;
     bike.theta = -1 * bike.theta2;
+    printf("bike contace : %d\n",contact_state);
+    update_Center(&bike);
+    
     update_Tire(&bike);
     update_Body(&bike);
 }

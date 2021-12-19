@@ -32,7 +32,7 @@ void InitBike(void)
     Vecter zero = {0, 0};
     bike.pose.x = 100.0;
     bike.pose.y = 100.0;
-    bike.vel = zero;
+    bike.vel =zero;
     bike.acc = zero;
 
     bike.theta2 = 0;
@@ -40,7 +40,8 @@ void InitBike(void)
     bike.omega = 0.0;
     bike.alpa = 0.0;
 
-    bike.body.offset = zero;
+    bike.body.offset.x = 0;
+    bike.body.offset.y = -10;
     bike.body.min_d = 24.27447;
     bike.body.r[0].x = -13;
     bike.body.r[0].y = -20.5;
@@ -54,14 +55,21 @@ void InitBike(void)
 
     bike.front.offset.x = 23;
     bike.front.offset.y = 9.5;
-    bike.front.radius = 10;
+    bike.front.radius = 12;
     bike.front.min_d = 11;
     bike.front.part = front;
+    bike.front.vel = zero;
+
+    
+
     bike.back.offset.x = -23;
     bike.back.offset.y = 9.5;
-    bike.back.radius = 10;
+    bike.back.radius = 12;
     bike.back.min_d = 11;
     bike.back.part = back;
+    bike.back.vel = zero;
+
+    
     update_Tire(&bike);
     return;
 }
@@ -91,18 +99,28 @@ void InitFeature(void)
         flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
         flist[i]->pose.y = 1000;
     }
-    // for (i = 0; i < FEATURENUM; i++)
-    // {   
-    //     printf("%d ",i);
-    //     flist[i]->dim=1;
-    //     flist[i]->value[0] = 800;
-    //     flist[i]->value[1] = -0.5;
-    //     flist[i]->limit[0] = 200*i;
-    //     flist[i]->limit[1] = 200*(i+1);
-    //     flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
-    //     flist[i]->pose.y = 1000;
-    // }
-    for (i = 2; i < FEATURENUM; i++)
+    for (i = 2; i < 3; i++)
+    {   
+        printf("%d ",i);
+        flist[i]->dim=1;
+        flist[i]->value[0] = 800;
+        flist[i]->value[1] = -0.0000;
+        flist[i]->limit[0] = 200*i;
+        flist[i]->limit[1] = 200*(i+1);
+        flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
+        flist[i]->pose.y = 1000;
+    }
+    for (i = 3; i < 5; i++)
+    {   
+        printf("%d ",i);
+        flist[i]->dim=0;
+        flist[i]->value[0] = 800;
+        flist[i]->limit[0] = 200*i;
+        flist[i]->limit[1] = 200*(i+1);
+        flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
+        flist[i]->pose.y = 1000;
+    }
+        for (i = 5; i < 6; i++)
     {   
         printf("%d ",i);
         flist[i]->dim=2;
@@ -110,9 +128,20 @@ void InitFeature(void)
         flist[i]->value[1] = 0;
         flist[i]->value[2] = -0.006;
         flist[i]->limit[0] = 200*i;
+        flist[i]->limit[1] = 200*(i)+100;
+        flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
+        flist[i]->pose.y = 1000;
+    }
+    for (i = 6; i < FEATURENUM; i++)
+    {   
+        printf("%d ",i);
+        flist[i]->dim=0;
+        flist[i]->value[0] = 800;
+        flist[i]->limit[0] = 200*i;
         flist[i]->limit[1] = 200*(i+1);
         flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
         flist[i]->pose.y = 1000;
     }
+
     printf("\n");
 }

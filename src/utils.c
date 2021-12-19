@@ -10,6 +10,13 @@ void update_Tire(BIKE *bike)
     return;
 }
 
+void update_Center(BIKE *bike)
+{
+    bike->pose.x = (bike->front.pose.x + bike->back.pose.x) / 2 +  bike->front.offset.y * sin(bike->theta);
+    bike->pose.y = (bike->front.pose.y + bike->back.pose.y) / 2 -  bike->front.offset.y * cos(bike->theta);
+    return;
+}
+
 void update_Body(BIKE *bike)
 {
     for (int i = 0; i < 4; i++)
@@ -18,6 +25,57 @@ void update_Body(BIKE *bike)
         bike->body.pose[i].y = bike->pose.y + cos(bike->theta) * (bike->body.offset.y + bike->body.r[i].y) + sin(bike->theta) * (bike->body.offset.x + bike->body.r[i].x);
     }
     return;
+}
+
+void update_tire_vel(BIKE *bike)
+{
+    //1. 상대속도, 위치 구하기
+    Vecter re_vel, re_pos, xuint = {1,0};
+    double inner, cross, sizep;
+    re_vel = vecter_minus(&bike->front.vel, &bike->back.vel);
+    re_pos = vecter_minus(&bike->front.pose, &bike->back.pose);
+    printf("repos %f %f revel %f %f\n", re_pos.x, re_pos.y, re_vel.x, re_vel.y);
+    inner = InnerProduct(&re_pos, &re_vel);
+    sizep = size(&re_pos);
+
+    //2.속도 재조정
+    SDL_assert(sizep!=0);
+    bike->front.vel.x -= inner * re_pos.x / (2 * sizep * sizep);
+    bike->front.vel.y -= inner * re_pos.y / (2 * sizep * sizep);
+    bike->back.vel.x += inner * re_pos.x / (2 * sizep * sizep);
+    bike->back.vel.y += inner * re_pos.y / (2 * sizep * sizep);
+
+    //3. 외적 구하기(모멘트 계산)
+    if(size(&re_vel)==0)
+        cross=0;
+    else
+        cross = CrossProduct(&re_pos, &re_vel) / (sizep*sizep) ; //양수 반시계
+    if(re_pos.y<0)
+        bike->theta2 = acos(InnerProduct(&xuint,&re_pos)/sizep);
+    else if(re_pos.y>0)
+        bike->theta2 = 2*PI - acos(InnerProduct(&xuint,&re_pos)/sizep) ;
+    else{
+        if(re_pos.x>0)
+            bike->theta2 = 0;
+        else
+            bike->theta2 = PI;
+    }
+}
+
+Vecter bounce(const Vecter * v1, const Vecter * normal){
+    Vecter tan = {-normal->y,normal->x}, v2,tmp1,tmp2;
+    printf("normal x %f y %f tan x %f y %f\n",normal->x,normal->y, tan.x,tan.y);
+    double inner,cross;
+    inner = InnerProduct(v1,normal);
+    cross = InnerProduct(v1,&tan);
+    printf("inner %f, cross %f\n", inner, cross);
+    if(inner>0)
+        tmp1 = vecter_mul(normal,inner);
+    else
+        tmp1 = vecter_mul(normal,-inner*E);
+
+    tmp2 = vecter_mul(&tan,cross);
+    return vecter_plus(&tmp1,&tmp2);
 }
 
 double distance(const Vecter *p1, const Vecter *p2)
@@ -31,4 +89,35 @@ double size(const Vecter* v){
 
 bool issameVec(const Vecter * v1, const Vecter * v2){
     return (bool) (abs(v1->x-v2->x)<0.000001 && abs(v1->y - v2->y)<0.000001);
+}
+
+Vecter vecter_minus(const Vecter * v1, const Vecter * v2){
+    Vecter v;
+    v.x = v1->x - v2->x;
+    v.y = v1->y - v2->y;
+    return v;
+}
+
+Vecter vecter_plus(const Vecter * v1, const Vecter * v2){
+    Vecter v;
+    v.x = v1->x + v2->x;
+    v.y = v1->y + v2->y;
+    return v;
+}
+
+Vecter vecter_mul(const Vecter * v1, double m){
+    Vecter v;
+    v.x = v1->x*m;
+    v.y = v1->y*m;
+    return v;
+}
+
+double InnerProduct(const Vecter *v1, const Vecter *v2)
+{
+    return v1->x * v2->x + v1->y * v2->y;
+}
+
+double CrossProduct(const Vecter *v1, const Vecter *v2)
+{
+    return v1->x * v2->y - v1->y * v2->x;
 }
