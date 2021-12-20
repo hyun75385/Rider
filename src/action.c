@@ -112,21 +112,20 @@ Vecter Force(void){
             // printf("2secter detected\n");
             if(finalcrash[i].part==front){
                 tmp = bounce(&bike.front.vel, &finalcrash[i].normal);
-        // bike.front.vel.x += tmp.x;
-                bike.front.vel.y += tmp.y;
-                bike.front.vel.x += tmp.x;
-                bike.front.vel.y += tmp.y;
+                bike.front.vel.x /= 2;
+                bike.front.vel.y /= 2;
+                bike.front.vel.x += tmp.x/2;
+                bike.front.vel.y += tmp.y/2;
             }
             else if(finalcrash[i].part==back){
                 tmp = bounce(&bike.back.vel, &finalcrash[i].normal);
-                bike.back.vel.x += tmp.x;
-                bike.back.vel.y += tmp.y;
+                bike.back.vel.x /= 2;
+                bike.back.vel.y /= 2;
+                bike.back.vel.x += tmp.x/2;
+                bike.back.vel.y += tmp.y/2;
             }
         }
     }
-
-
-    
 }
 
 Vecter adjust_pose(void)
