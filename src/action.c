@@ -87,25 +87,27 @@ void physics(void)
 Vecter Force(void){
     part_num count[4]={0};
     Vecter tmp;
-    if(fcrash==0){ 
-        // printf("in air\n");
-        bike.front.vel.y -= GRAVITY;
-        bike.back.vel.y -= GRAVITY;
-    }
+    // if(fcrash==0){ 
+    //     // printf("in air\n");
+    //     bike.front.vel.y -= GRAVITY;
+    //     bike.back.vel.y -= GRAVITY;
+    // }
     for (int i = 0; i < fcrash; i++){
         if(count[finalcrash[i].part]==0){
             count[finalcrash[i].part]=1;
             if(finalcrash[i].part==front){
                 bike.front.vel = bounce(&bike.front.vel, &finalcrash[i].normal);
                 // printf("normal %f %f\n",finalcrash[i].normal.x,finalcrash[i].normal.y);
-                bike.front.vel.x += finalcrash[i].normal.x * finalcrash[i].normal.y * GRAVITY ;
-                bike.front.vel.y -= finalcrash[i].normal.x * finalcrash[i].normal.x * GRAVITY ;
-                // printf("gravity: %f %f \n",finalcrash[i].normal.x * finalcrash[i].normal.y * GRAVITY,finalcrash[i].normal.x * finalcrash[i].normal.x * GRAVITY);
+                bike.front.vel.x += finalcrash[i].normal.x * finalcrash[i].normal.x * GRAVITY ;
+                bike.front.vel.y -= finalcrash[i].normal.x * finalcrash[i].normal.y * GRAVITY ;
+                printf("front gravity: %f %f \n",finalcrash[i].normal.x * finalcrash[i].normal.y * GRAVITY,finalcrash[i].normal.x * finalcrash[i].normal.x * GRAVITY);
             }
             else if(finalcrash[i].part==back){
                 bike.back.vel = bounce(&bike.back.vel, &finalcrash[i].normal);
-                bike.back.vel.x += finalcrash[i].normal.x * finalcrash[i].normal.y * GRAVITY ;
-                bike.back.vel.y -= finalcrash[i].normal.x * finalcrash[i].normal.x * GRAVITY ;
+                bike.back.vel.x += finalcrash[i].normal.x * finalcrash[i].normal.x * GRAVITY ;
+                bike.back.vel.y -= finalcrash[i].normal.x * finalcrash[i].normal.y * GRAVITY ;
+                printf("back gravity: %f %f \n",finalcrash[i].normal.x * finalcrash[i].normal.y * GRAVITY,finalcrash[i].normal.x * finalcrash[i].normal.x * GRAVITY);
+
             }
         }
         else{
@@ -125,6 +127,13 @@ Vecter Force(void){
                 bike.back.vel.y += tmp.y/2;
             }
         }
+    }
+    if(count[front]==0){
+        bike.front.vel.y -= GRAVITY;
+    }
+    if(count[back]==0){
+        bike.back.vel.y -= GRAVITY;
+
     }
 }
 
@@ -335,7 +344,7 @@ void ActBike(void)
         bike.omega = 0;
         if (app.key_space)
         {
-            printf("act bike %f\n",bike.back.vel.x * cos(bike.theta));
+            // printf("act bike %f\n",size(&bike.back.vel));
             if (bike.back.vel.x * cos(bike.theta) >= 0 && size(&bike.back.vel) < PLAYER_MAXSPEED) //방향이 다를때
             {   
                 bike.back.vel.x += PLAYER_SPEED * cos(bike.theta);
@@ -346,22 +355,18 @@ void ActBike(void)
                 bike.back.vel.x += PLAYER_SPEED * cos(bike.theta);
                 bike.back.vel.y += PLAYER_SPEED * sin(bike.theta);
             }
-            // else { else시 그냥 속도 유지
-            //     bike.vel.x+= PLAYER_SPEED * cos(bike.theta);
-            //     bike.vel.y+= PLAYER_SPEED * sin(bike.theta);
-            // }
         }
         if (!app.key_space)
         {
-            if (bike.back.vel.x * cos(bike.theta) >= 0 && size(&bike.back.vel) - PLAYER_SPEED > 0)
+            if (bike.back.vel.x * cos(bike.theta) >= 0 && size(&bike.back.vel) - PLAYER_BRAKE > 0)
             {
-                bike.back.vel.x -= PLAYER_SPEED * cos(bike.theta);
-                bike.back.vel.y -= PLAYER_SPEED * sin(bike.theta);
+                bike.back.vel.x -= PLAYER_BRAKE * cos(bike.theta);
+                bike.back.vel.y -= PLAYER_BRAKE * sin(bike.theta);
             }
-            else if (bike.back.vel.x * cos(bike.theta) <= 0 && size(&bike.back.vel) - PLAYER_SPEED > 0)
+            else if (bike.back.vel.x * cos(bike.theta) <= 0 && size(&bike.back.vel) - PLAYER_BRAKE > 0)
             { //방향이 다를때
-                bike.back.vel.x += PLAYER_SPEED * cos(bike.theta);
-                bike.back.vel.y += PLAYER_SPEED * sin(bike.theta);
+                bike.back.vel.x += PLAYER_BRAKE * cos(bike.theta);
+                bike.back.vel.y += PLAYER_BRAKE * sin(bike.theta);
             }
             else
             {
@@ -403,9 +408,9 @@ void ActBike(void)
 
 void Updatepose(void)
 {
-    // printf("tire vel be %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
+    printf("tire vel be %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
     update_tire_vel(&bike);
-    // printf("tire vel af  %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
+    printf("tire vel af  %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
     bike.front.pose.x += bike.front.vel.x;
     bike.front.pose.y += bike.front.vel.y;
     bike.back.pose.x += bike.back.vel.x;

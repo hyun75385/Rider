@@ -15,8 +15,13 @@
 /*상수 매크로 정의*/
 #define FPS 60              /**< 게임 FPS*/
 #define BUFSIZE 1024        /**< 문자열 버퍼 크기*/
+#define DEBUG_MODE 0
 
+#if (DEBUG_MODE==1)
 #define SCREEN_WIDTH 3000    /**< 화면 너비(픽셀)640*/
+#elif (DEBUG_MOD==0)
+#define SCREEN_WIDTH 960    /**< 화면 너비(픽셀)640*/
+#endif
 #define SCREEN_HEIGHT 960   /**< 화면 높이(픽셀)960*/
 
 #define FEATURENUM 10
@@ -26,10 +31,11 @@
 
 #define PLAYER_WIDTH 24     /**< 플레이어 객체 너비(픽셀)*/
 #define PLAYER_HEIGHT 24    /**< 플레이어 객체 높이(픽셀)*/
-#define PLAYER_SPEED 0.05     /**< 가속도*/
-#define PLAYER_MAXSPEED 5   /**< 최대 속도*/
-#define PLAYER_ROT 0.0001     /**< 가속도*/
-#define PLAYER_MAXROT 0.01   /**< 최대 속도*/
+#define PLAYER_SPEED 0.1     /**< 가속도*/
+#define PLAYER_BRAKE 0.01  /*브레이크*/
+#define PLAYER_MAXSPEED 20   /**< 최대 속도*/
+#define PLAYER_ROT 0.0001     /**< 각가속도*/
+#define PLAYER_MAXROT 0.01   /**< 최대 각속도*/
 
 
 #define GRAVITY -0.1

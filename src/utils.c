@@ -34,7 +34,7 @@ void update_tire_vel(BIKE *bike)
     double inner, cross, sizep;
     re_vel = vecter_minus(&bike->front.vel, &bike->back.vel);
     re_pos = vecter_minus(&bike->front.pose, &bike->back.pose);
-    printf("repos %f %f revel %f %f\n", re_pos.x, re_pos.y, re_vel.x, re_vel.y);
+    // printf("repos %f %f revel %f %f\n", re_pos.x, re_pos.y, re_vel.x, re_vel.y);
     inner = InnerProduct(&re_pos, &re_vel);
     sizep = size(&re_pos);
 
@@ -45,17 +45,17 @@ void update_tire_vel(BIKE *bike)
     bike->back.vel.x += inner * re_pos.x / (2 * sizep * sizep);
     bike->back.vel.y += inner * re_pos.y / (2 * sizep * sizep);
     printf("omega : %f\n",bike->omega );
-    
+    // 
     //3. 추가 각속도(omega)를 통해 normal 성분한번더 업데이트
-    printf("repos : %f %f \n",re_pos.x,re_pos.y);
+    // printf("repos : %f %f \n",re_pos.x,re_pos.y);
     are_pos = vecter_mul(&re_pos,0.5);
     bre_pos = vecter_mul(&re_pos,-0.5);
 
     //front와 back에 더해지는 속도 저장
-    printf("arepos : %f %f brepos %f %f\n",are_pos.x,are_pos.y,bre_pos.x,bre_pos.y);
+    // printf("arepos : %f %f brepos %f %f\n",are_pos.x,are_pos.y,bre_pos.x,bre_pos.y);
     are_pos = WxR( bike->omega, &are_pos);
     bre_pos = WxR( bike->omega, &bre_pos);
-    printf("arepos : %f %f brepos %f %f\n",are_pos.x,are_pos.y,bre_pos.x,bre_pos.y);
+    // printf("arepos : %f %f brepos %f %f\n",are_pos.x,are_pos.y,bre_pos.x,bre_pos.y);
     bike->front.vel.x -= are_pos.x;
     bike->front.vel.y -= are_pos.y;
     bike->back.vel.x += bre_pos.x;
@@ -69,7 +69,7 @@ void update_Center_theta(BIKE * bike){
     re_pos = vecter_minus(&bike->front.pose, &bike->back.pose);
     //3. 외적 구하기(모멘트 계산)
     sizep = size(&re_pos);
-    printf("sizep : %f\n",sizep);
+    // printf("sizep : %f\n",sizep);
     if(re_pos.y<0)
         bike->theta2 = acos(InnerProduct(&xuint,&re_pos)/sizep);
     else if(re_pos.y>0)
@@ -84,11 +84,11 @@ void update_Center_theta(BIKE * bike){
 
 Vecter bounce(const Vecter * v1, const Vecter * normal){
     Vecter tan = {-normal->y,normal->x}, v2,tmp1,tmp2;
-    printf("normal x %f y %f tan x %f y %f\n",normal->x,normal->y, tan.x,tan.y);
+    // printf("normal x %f y %f tan x %f y %f\n",normal->x,normal->y, tan.x,tan.y);
     double inner,cross;
     inner = InnerProduct(v1,normal);
     cross = InnerProduct(v1,&tan);
-    printf("inner %f, cross %f\n", inner, cross);
+    // printf("inner %f, cross %f\n", inner, cross);
     if(inner>0)
         tmp1 = vecter_mul(normal,inner);
     else
