@@ -99,18 +99,18 @@ void InitFeature(void)
         flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
         flist[i]->pose.y = 1000;
     }
+    // for (i = 2; i < 3; i++)
+    // {   
+    //     printf("%d ",i);
+    //     flist[i]->dim=1;
+    //     flist[i]->value[0] = 800;
+    //     flist[i]->value[1] = -0.6;
+    //     flist[i]->limit[0] = 200*i;
+    //     flist[i]->limit[1] = 200*(i+1);
+    //     flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
+    //     flist[i]->pose.y = 1000;
+    // }
     for (i = 2; i < 3; i++)
-    {   
-        printf("%d ",i);
-        flist[i]->dim=1;
-        flist[i]->value[0] = 800;
-        flist[i]->value[1] = -0.0000;
-        flist[i]->limit[0] = 200*i;
-        flist[i]->limit[1] = 200*(i+1);
-        flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
-        flist[i]->pose.y = 1000;
-    }
-    for (i = 3; i < 5; i++)
     {   
         printf("%d ",i);
         flist[i]->dim=0;
@@ -120,7 +120,7 @@ void InitFeature(void)
         flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
         flist[i]->pose.y = 1000;
     }
-        for (i = 5; i < 6; i++)
+        for (i = 3; i < 4; i++)
     {   
         printf("%d ",i);
         flist[i]->dim=2;
@@ -128,11 +128,11 @@ void InitFeature(void)
         flist[i]->value[1] = 0;
         flist[i]->value[2] = -0.006;
         flist[i]->limit[0] = 200*i;
-        flist[i]->limit[1] = 200*(i)+100;
+        flist[i]->limit[1] = 200*(i)+200;
         flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
         flist[i]->pose.y = 1000;
     }
-    for (i = 6; i < FEATURENUM; i++)
+    for (i = 4; i < FEATURENUM; i++)
     {   
         printf("%d ",i);
         flist[i]->dim=0;

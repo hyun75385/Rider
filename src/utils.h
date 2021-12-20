@@ -23,5 +23,7 @@ void update_Center(BIKE *bike);
 Vecter vecter_plus(const Vecter * v1, const Vecter * v2);
 Vecter vecter_mul(const Vecter * v1, double m);
 Vecter bounce(const Vecter * v1, const Vecter * normal);
+void update_Center_theta(BIKE * bike);
+Vecter WxR(double w, const Vecter *  r);
 
 #endif

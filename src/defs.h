@@ -28,8 +28,8 @@
 #define PLAYER_HEIGHT 24    /**< 플레이어 객체 높이(픽셀)*/
 #define PLAYER_SPEED 0.05     /**< 가속도*/
 #define PLAYER_MAXSPEED 5   /**< 최대 속도*/
-#define PLAYER_ROT 0.01     /**< 가속도*/
-#define PLAYER_MAXROT 0.1   /**< 최대 속도*/
+#define PLAYER_ROT 0.0001     /**< 가속도*/
+#define PLAYER_MAXROT 0.01   /**< 최대 속도*/
 
 
 #define GRAVITY -0.1
