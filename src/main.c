@@ -17,8 +17,11 @@ int main(void) {
     InitMemorySet();
     InitSDL();
     InitBike();
+    InitTTF();
     InitFeature();
     initgamestate();
+    initbackground();
+    InitScoreBoard();
 
 
 
@@ -39,8 +42,6 @@ int main(void) {
         DrawGame();
         
         ShowWindow();
-
-
         /* 일정 시간 대기 (60FPS 기준 한 프레임에 16ms) */
         // SDL_Delay(1000);
         SDL_Delay(10);

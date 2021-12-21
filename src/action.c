@@ -8,20 +8,17 @@ int collapse = 0;
 int fcrash = 0;
 Crash crashs[10];
 Crash finalcrash[10];
+int last_feature = 0;
+int turnscore = 0;
+double dtheta=0, last_theta = 0;
 
 void ActGame(void)
 {
     contact_state = false;
-    // physics (Collapse & gravity) & update speed acc omega alpa
-    // printf("\ntire vel be %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
     physics();
-    // printf("tire vel pe %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
     ActBike(); //update speed, omega
-    // printf("tire vel ac  %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
     Updatepose();
-    // printf("tire vel ud %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
-
-
+    ActScoreBoard();
     return;
 }
 
@@ -33,6 +30,9 @@ void physics(void)
     collapse = 0;
     contact_state = false;
     inter = closestFeature();
+    if(inter>last_feature){
+        last_feature = inter;
+    }
     if (inter == 0)
     {
         detect_contact(flist[inter]);
@@ -371,6 +371,8 @@ void ActBike(void)
     {                
         bike.omega = 0;
         bike.alpa = 0;
+        dtheta = 2*PI;
+        last_theta=0;
         if (app.key_space)
         {
             // printf("act bike %f\n",size(&bike.back.vel));
@@ -406,18 +408,28 @@ void ActBike(void)
     }
     else
     {
+        if(dtheta + last_theta - bike.theta < 0 && dtheta > 0){
+            dtheta=2*PI;
+            turnscore++;
+        }
+        // if(last_theta>PI)
+        if(bike.theta -last_theta > PI)
+            dtheta += 2*PI -(bike.theta -last_theta);
+        else
+            dtheta += bike.theta -last_theta;
+        printf("last_theat : %f d %f\n",(bike.theta-last_theta)*180/PI,dtheta*180/PI);
+        last_theta = bike.theta;
+        
         if (app.key_space)
         {
             if (bike.omega < PLAYER_MAXROT)
             {   
-                printf("turn\n");
                 bike.alpa = PLAYER_ROT;
                 bike.omega += bike.alpa;
             }
         }
         if (!app.key_space)
         {
-            printf("stop\n");
             if (bike.omega > 0 && bike.omega - PLAYER_ROT > 0)
             {
                 bike.alpa = -PLAYER_ROT;
@@ -428,7 +440,6 @@ void ActBike(void)
             {
                 bike.alpa = PLAYER_ROT;
                 bike.omega += bike.alpa;
-
             }
             else
             {   
@@ -453,6 +464,21 @@ void Updatepose(void)
     update_Center(&bike);
     update_Tire(&bike); //Tire위치 재조정(center -> boyd)
     update_Body(&bike);
+    SCORE = turnscore + last_feature;
 
+    printf("SCORE %d\n",SCORE);
+    if(bike.pose.y > 1000){
+        GAME_END = true;
+    }
     printf("\n");
+}
+
+void ActScoreBoard(void) {
+    char tmp[36];
+    strcpy(score_text, "Score: ");
+    SDL_itoa(SCORE, tmp, 10);
+    strcat(score_text, tmp);
+    score_board.surface =TTF_RenderText_Solid(app.font, score_text, score_board.color);
+    score_board.texture =SDL_CreateTextureFromSurface(app.renderer, score_board.surface);
+    return;
 }

@@ -1,12 +1,12 @@
 
 #include "draw.h"
 
-int X;
+int X;  
 
 void ClearWindow(void)
 {
-    SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, 0);
-    SDL_RenderClear(app.renderer);
+    SDL_QueryTexture(background.texture, NULL, NULL, &(background.rect.w), &(background.rect.h));
+    SDL_RenderCopy(app.renderer, background.texture, NULL, NULL);
 
     return;
 }
@@ -39,7 +39,6 @@ void DrawGame(void)
     else
         X = 0;
     RenderBikeBody(&bike);
-    RenderTire(&bike);
     for (int i = 0; i < FEATURENUM; i++)
     {
         if (flist[i]->dim == 0)
@@ -49,8 +48,8 @@ void DrawGame(void)
         if (flist[i]->dim == 2)
             RenderFeature_2(flist[i]);
     }
+    RenderScoreBoard(&score_board);
     return;
-
 #endif
 }
 
@@ -67,17 +66,10 @@ void RenderBikeBody(BIKE *bike)
 
 #if (DEBUG_MODE == 0)
     bike->size.x -= X;
-    SDL_QueryTexture(bike->texture, NULL, NULL, &(bike->size.w),&(bike->size.h));
-    SDL_RenderCopy(app.renderer, bike->texture, NULL, &(bike->size));
-    for (int i = 0; i < 3; i++)
-    {
-        SDL_RenderDrawLine(app.renderer, (int)bike->body.pose[i].x - X, (int)bike->body.pose[i].y, (int)bike->body.pose[i + 1].x - X, (int)bike->body.pose[i + 1].y);
-    }
-    SDL_RenderDrawLine(app.renderer, (int)bike->body.pose[3].x - X, (int)bike->body.pose[3].y, (int)bike->body.pose[0].x - X, (int)bike->body.pose[0].y);
-    // printf("pose %d %d %d %d\n",(int)bike->size.x - X, (int)bike->size.y,(int)bike->size.w , (int)bike->size.h);
+    SDL_QueryTexture(bike->texture, NULL, NULL, &(bike->size.w), &(bike->size.h));
+    SDL_RenderCopyEx(app.renderer, bike->texture, NULL, &(bike->size), bike->theta * 180 / PI, NULL, SDL_FLIP_NONE);
 #endif
     return;
-
 }
 
 void RenderTire(const BIKE *bike)
@@ -167,9 +159,9 @@ void RenderFeature_0(const Feature *f)
 #endif
 #if (DEBUG_MODE == 0)
     SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0], f->limit[1] - X, f->value[0]);
-    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0]+1, f->limit[1] - X, f->value[0]+1);
-    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0]+2, f->limit[1] - X, f->value[0]+2);
-    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0]+3, f->limit[1] - X, f->value[0]+3);
+    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0] + 1, f->limit[1] - X, f->value[0] + 1);
+    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0] + 2, f->limit[1] - X, f->value[0] + 2);
+    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0] + 3, f->limit[1] - X, f->value[0] + 3);
 #endif
 }
 
@@ -180,9 +172,9 @@ void RenderFeature_1(const Feature *f)
 #endif
 #if (DEBUG_MODE == 0)
     SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0], f->limit[1] - X, f->value[1] * (f->limit[1] - f->limit[0]) + f->value[0]);
-    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0]+1, f->limit[1] - X, f->value[1] * (f->limit[1] - f->limit[0]) + f->value[0]+1);
-    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0]+2, f->limit[1] - X, f->value[1] * (f->limit[1] - f->limit[0]) + f->value[0]+2);
-    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0]+3, f->limit[1] - X, f->value[1] * (f->limit[1] - f->limit[0]) + f->value[0]+3);
+    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0] + 1, f->limit[1] - X, f->value[1] * (f->limit[1] - f->limit[0]) + f->value[0] + 1);
+    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0] + 2, f->limit[1] - X, f->value[1] * (f->limit[1] - f->limit[0]) + f->value[0] + 2);
+    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0] + 3, f->limit[1] - X, f->value[1] * (f->limit[1] - f->limit[0]) + f->value[0] + 3);
 
 #endif
 }
@@ -206,13 +198,20 @@ void RenderFeature_2(const Feature *f)
     for (int x = f->limit[0] + 1; x < f->limit[1]; x++)
     {
         y = f->value[2] * pow(x - f->limit[0], 2) + f->value[1] * pow(x - f->limit[0], 1) + f->value[0];
-        SDL_RenderDrawLine(app.renderer, oldx-X, oldy, x-X, y);
-        SDL_RenderDrawLine(app.renderer, oldx-X, oldy+1, x-X, y+1);
-        SDL_RenderDrawLine(app.renderer, oldx-X, oldy+2, x-X, y+2);
-        SDL_RenderDrawLine(app.renderer, oldx-X, oldy+3, x-X, y+3);
+        SDL_RenderDrawLine(app.renderer, oldx - X, oldy, x - X, y);
+        SDL_RenderDrawLine(app.renderer, oldx - X, oldy + 1, x - X, y + 1);
+        SDL_RenderDrawLine(app.renderer, oldx - X, oldy + 2, x - X, y + 2);
+        SDL_RenderDrawLine(app.renderer, oldx - X, oldy + 3, x - X, y + 3);
 
         oldx = x;
         oldy = y;
     }
 #endif
+}
+
+void RenderScoreBoard(Text *object) {
+    SDL_QueryTexture(object->texture, NULL, NULL, &(object->pos.w),&(object->pos.h));
+    SDL_RenderCopy(app.renderer, object->texture, NULL, &(object->pos));
+
+    return;
 }

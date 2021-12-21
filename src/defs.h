@@ -102,7 +102,6 @@ typedef struct bike{
     RECT body;
     Tire front;
     Tire back;
-
 }BIKE;
 
 
@@ -119,4 +118,18 @@ typedef struct crash{
     Vecter pose;
     part_num part;
 }Crash;
+
+typedef struct entity{
+    SDL_Texture * texture;
+    SDL_Rect rect;
+}Entity;
+
+typedef struct {
+    SDL_Rect pos;           /**< 직사각형 객체의 상태를 나타내기 위한 구조체
+                                여기에 객체의 좌표, 위치 저장*/
+    SDL_Color color;        /**< 글씨 색깔을 저장하는 구조체*/
+    SDL_Surface *surface;   /**< 폰트 렌더링을 위해 필요한 구조체*/
+    SDL_Texture *texture;   /**< 텍스쳐를 담고 있는 구조체 (문자열을 surface로 만들고,
+                                그 후 texture에 저장)*/
+} Text;
 #endif

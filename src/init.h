@@ -12,6 +12,8 @@ extern App app;
 extern Feature ** flist;
 extern int fnum;
 extern bool GAME_END;
+extern Entity background;
+extern Text score_board;  
 
 
 
@@ -26,6 +28,8 @@ void InitBike(void);
 void InitWall(void);
 void InitFeature(void);
 void initgamestate(void);
+void initbackground(void);
+void InitScoreBoard(void);
 
 
 

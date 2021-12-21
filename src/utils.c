@@ -173,7 +173,7 @@ void ground(int i,int chechf[]){
         return;
     chechf[i]=1;
     flist[i]->dim=0;
-    flist[i]->value[0] = 1000;
+    flist[i]->value[0] = 2000;
     flist[i]->limit[0] = 200*i;
     flist[i]->limit[1] = 200*(i+1);
     flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;

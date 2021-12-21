@@ -10,6 +10,8 @@ extern BIKE bike;
 extern Feature ** flist;
 extern int fnum;
 extern bool GAME_END;
+extern int SCORE;
+
 
 
 void update_Tire(BIKE *bike);

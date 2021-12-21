@@ -11,6 +11,13 @@ extern BIKE bike;
 extern Feature ** flist;
 extern int fnum;
 extern bool GAME_END;
+extern int SCORE;
+extern Entity background;
+extern char score_text[20];
+extern Text score_board;  
+
+
+
 
 void ClearWindow(void);
 
@@ -26,6 +33,7 @@ void RenderBikeBody( BIKE *bike);
 void RenderFeature_0(const Feature * f);
 void RenderFeature_1(const Feature * f);
 void RenderFeature_2(const Feature *f);
+void RenderScoreBoard(Text *object);
 
 
 #endif

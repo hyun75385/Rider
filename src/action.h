@@ -11,6 +11,10 @@ extern BIKE bike;
 extern Feature ** flist;
 extern int fnum;
 extern bool GAME_END;
+extern int SCORE;
+extern Text score_board;  
+extern char score_text[20];
+
 
 
 void ActGame(void);
@@ -26,5 +30,6 @@ Vecter cal_normal(double diff);
 double cal_circle_y(double x, const Tire * tire);
 Vecter adjust_pose(void);
 Vecter Force(void);
+void ActScoreBoard(void);
 
 #endif
