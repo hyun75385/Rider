@@ -213,7 +213,7 @@ void second(int i,int chechf[],double val2, double val1){
     flist[i]->value[1] = val1;
     flist[i]->value[2] = val2;
     flist[i]->limit[0] = 200*i;
-    flist[i]->limit[1] = 200*(i)+300;
+    flist[i]->limit[1] = 200*(i)+200;
     flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
     flist[i]->pose.y = 1000;
 }

@@ -24,7 +24,7 @@
 #endif
 #define SCREEN_HEIGHT 960   /**< 화면 높이(픽셀)960*/
 
-#define FEATURENUM 10
+#define FEATURENUM 50
 
 #define MAP_WIDTH 10000
 #define MAP_HEIGHT 960

@@ -97,7 +97,11 @@ void InitFeature(void)
     }
     /*장애물 리스트*/
     second(3,checkf,-0.003,0);
+    second(9,checkf,-0.006,0);
+
     first(6,checkf,-0.3);
+
+
 
     for (i = 0; i < FEATURENUM; i++)
     {
