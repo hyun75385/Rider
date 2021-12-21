@@ -175,7 +175,8 @@ int closestFeature(void)
 void detect_contact(const Feature *f)
 {
     //Tire1
-    Vecter P;
+    Vecter P,max,min;
+    int i;
     double boundary[2] = {-1, -1}; //x값
     double min_x = -1, min_d, dis;
     double iner1, iner2;
@@ -242,6 +243,33 @@ void detect_contact(const Feature *f)
         contact_state = true;
         // printf("iner2 %f max x %f distance %f \n", iner2, min_x, min_d);
     }
+
+    i=0;
+    min.x = bike.body.pose[i].x;
+    min.y = bike.body.pose[i].y;
+    max.x = bike.body.pose[i].x;
+    max.y = bike.body.pose[i].y;
+    for(i=1;i<4;i++){
+        if(bike.body.pose[i].x<min.x)
+            min.x = bike.body.pose[i].x;
+        if(bike.body.pose[i].y<min.y)
+            min.y = bike.body.pose[i].y;
+        if(bike.body.pose[i].x>max.x)
+            max.x = bike.body.pose[i].x;
+        if(bike.body.pose[i].y>max.y)
+            max.y = bike.body.pose[i].y;
+    }
+    for (P.x = f->limit[0]; P.x < f->limit[1]; P.x += 1)
+    {
+        P.y = cal_y(P.x, f);
+        if(min.x <= P.x && min.y <= P.y && P.x <= max.x && P.y <= max.y){
+            GAME_END=true;
+            printf("GAMEEND %d\n\n",GAME_END);
+            break;
+        }
+    }
+
+
 }
 
 double cal_crash_tire(double x, const Feature *f, const Tire *tire)
@@ -342,6 +370,7 @@ void ActBike(void)
     if (contact_state)
     {                
         bike.omega = 0;
+        bike.alpa = 0;
         if (app.key_space)
         {
             // printf("act bike %f\n",size(&bike.back.vel));
@@ -379,10 +408,11 @@ void ActBike(void)
     {
         if (app.key_space)
         {
-            printf("turn\n");
             if (bike.omega < PLAYER_MAXROT)
-            {
-                bike.omega += PLAYER_ROT;
+            {   
+                printf("turn\n");
+                bike.alpa = PLAYER_ROT;
+                bike.omega += bike.alpa;
             }
         }
         if (!app.key_space)
@@ -390,15 +420,19 @@ void ActBike(void)
             printf("stop\n");
             if (bike.omega > 0 && bike.omega - PLAYER_ROT > 0)
             {
-                bike.omega -= PLAYER_ROT;
+                bike.alpa = -PLAYER_ROT;
+                bike.omega+=bike.alpa;
+
             }
             else if (bike.omega < 0 && bike.omega + PLAYER_ROT < 0)
             {
-                bike.omega += PLAYER_ROT;
+                bike.alpa = PLAYER_ROT;
+                bike.omega += bike.alpa;
+
             }
             else
-            {
-                bike.omega = 0;
+            {   
+                bike.alpa = 0;
             }
         }
     }
@@ -408,9 +442,7 @@ void ActBike(void)
 
 void Updatepose(void)
 {
-    printf("tire vel be %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
     update_tire_vel(&bike);
-    printf("tire vel af  %f %f %f %f\n", bike.front.vel.x, bike.front.vel.y, bike.back.vel.x, bike.back.vel.y);
     bike.front.pose.x += bike.front.vel.x;
     bike.front.pose.y += bike.front.vel.y;
     bike.back.pose.x += bike.back.vel.x;
@@ -421,5 +453,6 @@ void Updatepose(void)
     update_Center(&bike);
     update_Tire(&bike); //Tire위치 재조정(center -> boyd)
     update_Body(&bike);
+
     printf("\n");
 }

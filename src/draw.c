@@ -54,7 +54,7 @@ void DrawGame(void)
 #endif
 }
 
-void RenderBikeBody(const BIKE *bike)
+void RenderBikeBody(BIKE *bike)
 {
     SDL_SetRenderDrawColor(app.renderer, 100, 255, 255, 255);
 #if (DEBUG_MODE == 1)
@@ -66,12 +66,15 @@ void RenderBikeBody(const BIKE *bike)
 #endif
 
 #if (DEBUG_MODE == 0)
+    bike->size.x -= X;
+    SDL_QueryTexture(bike->texture, NULL, NULL, &(bike->size.w),&(bike->size.h));
+    SDL_RenderCopy(app.renderer, bike->texture, NULL, &(bike->size));
     for (int i = 0; i < 3; i++)
     {
         SDL_RenderDrawLine(app.renderer, (int)bike->body.pose[i].x - X, (int)bike->body.pose[i].y, (int)bike->body.pose[i + 1].x - X, (int)bike->body.pose[i + 1].y);
     }
     SDL_RenderDrawLine(app.renderer, (int)bike->body.pose[3].x - X, (int)bike->body.pose[3].y, (int)bike->body.pose[0].x - X, (int)bike->body.pose[0].y);
-
+    // printf("pose %d %d %d %d\n",(int)bike->size.x - X, (int)bike->size.y,(int)bike->size.w , (int)bike->size.h);
 #endif
     return;
 
@@ -164,6 +167,9 @@ void RenderFeature_0(const Feature *f)
 #endif
 #if (DEBUG_MODE == 0)
     SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0], f->limit[1] - X, f->value[0]);
+    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0]+1, f->limit[1] - X, f->value[0]+1);
+    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0]+2, f->limit[1] - X, f->value[0]+2);
+    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0]+3, f->limit[1] - X, f->value[0]+3);
 #endif
 }
 
@@ -174,6 +180,10 @@ void RenderFeature_1(const Feature *f)
 #endif
 #if (DEBUG_MODE == 0)
     SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0], f->limit[1] - X, f->value[1] * (f->limit[1] - f->limit[0]) + f->value[0]);
+    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0]+1, f->limit[1] - X, f->value[1] * (f->limit[1] - f->limit[0]) + f->value[0]+1);
+    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0]+2, f->limit[1] - X, f->value[1] * (f->limit[1] - f->limit[0]) + f->value[0]+2);
+    SDL_RenderDrawLine(app.renderer, f->limit[0] - X, f->value[0]+3, f->limit[1] - X, f->value[1] * (f->limit[1] - f->limit[0]) + f->value[0]+3);
+
 #endif
 }
 
@@ -197,6 +207,10 @@ void RenderFeature_2(const Feature *f)
     {
         y = f->value[2] * pow(x - f->limit[0], 2) + f->value[1] * pow(x - f->limit[0], 1) + f->value[0];
         SDL_RenderDrawLine(app.renderer, oldx-X, oldy, x-X, y);
+        SDL_RenderDrawLine(app.renderer, oldx-X, oldy+1, x-X, y+1);
+        SDL_RenderDrawLine(app.renderer, oldx-X, oldy+2, x-X, y+2);
+        SDL_RenderDrawLine(app.renderer, oldx-X, oldy+3, x-X, y+3);
+
         oldx = x;
         oldy = y;
     }

@@ -18,6 +18,7 @@ int main(void) {
     InitSDL();
     InitBike();
     InitFeature();
+    initgamestate();
 
 
 
@@ -30,17 +31,21 @@ int main(void) {
         /* (2) 키보드 입력 받기*/
         GetInput();
         /* (3) 메인 로직 수행 후 객체들 화면에 그리기 */
-    
+        if(GAME_END == false){
         /* 게임 진행 중일 시 */
-        ActGame();
-        DrawGame();
+            ActGame();
         /* (4) 화면 보여주기 */
+        }
+        DrawGame();
+        
         ShowWindow();
+
 
         /* 일정 시간 대기 (60FPS 기준 한 프레임에 16ms) */
         // SDL_Delay(1000);
         SDL_Delay(10);
     }
+
 
     return 0;
 }

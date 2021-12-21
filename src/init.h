@@ -11,6 +11,8 @@ extern BIKE bike;
 extern App app;
 extern Feature ** flist;
 extern int fnum;
+extern bool GAME_END;
+
 
 
 
@@ -23,6 +25,9 @@ void QuitTTF(void);
 void InitBike(void);
 void InitWall(void);
 void InitFeature(void);
+void initgamestate(void);
+
+
 
 
 #endif

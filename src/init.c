@@ -30,6 +30,12 @@ void InitMemorySet(void)
 void InitBike(void)
 {
     Vecter zero = {0, 0};
+    bike.texture = IMG_LoadTexture(app.renderer, "./gfx/64.png");
+    bike.size.x = 100-32;
+    bike.size.y = 100-32;
+    bike.size.w = 64;
+    bike.size.h = 64;
+
     bike.pose.x = 100.0;
     bike.pose.y = 100.0;
     bike.vel =zero;
@@ -41,20 +47,20 @@ void InitBike(void)
     bike.alpa = 0.0;
 
     bike.body.offset.x = 0;
-    bike.body.offset.y = -10;
+    bike.body.offset.y = -15;
     bike.body.min_d = 24.27447;
     bike.body.r[0].x = -13;
-    bike.body.r[0].y = -20.5;
+    bike.body.r[0].y = -15.5;
     bike.body.r[1].x = 13;
-    bike.body.r[1].y = -20.5;
+    bike.body.r[1].y = -15.5;
     bike.body.r[2].x = 13;
-    bike.body.r[2].y = 9.5;
+    bike.body.r[2].y = 5.5;
     bike.body.r[3].x = -13;
-    bike.body.r[3].y = 9.5;
+    bike.body.r[3].y = 5.5;
     update_Body(&bike);
 
     bike.front.offset.x = 23;
-    bike.front.offset.y = 9.5;
+    bike.front.offset.y = 5;
     bike.front.radius = 12;
     bike.front.min_d = 11;
     bike.front.part = front;
@@ -63,7 +69,7 @@ void InitBike(void)
     
 
     bike.back.offset.x = -23;
-    bike.back.offset.y = 9.5;
+    bike.back.offset.y = 5;
     bike.back.radius = 12;
     bike.back.min_d = 11;
     bike.back.part = back;
@@ -76,7 +82,7 @@ void InitBike(void)
 
 void InitFeature(void)
 {
-    int i = 0, last;
+    int i = 0, last, checkf[FEATURENUM]={0};
     Feature *tmp;
     tmp = malloc(sizeof(Feature *) * FEATURENUM);
     if (tmp != NULL)
@@ -89,59 +95,19 @@ void InitFeature(void)
         else
             exit(0);
     }
-    for (i = 0; i < 2; i++)
-    {   
-        printf("%d ",i);
-        flist[i]->dim=0;
-        flist[i]->value[0] = 800;
-        flist[i]->limit[0] = 200*i;
-        flist[i]->limit[1] = 200*(i+1);
-        flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
-        flist[i]->pose.y = 1000;
-    }
-    for (i = 2; i < 3; i++)
-    {   
-        printf("%d ",i);
-        flist[i]->dim=1;
-        flist[i]->value[0] = 800;
-        flist[i]->value[1] = -0.8;
-        flist[i]->limit[0] = 200*i;
-        flist[i]->limit[1] = 200*(i+1);
-        flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
-        flist[i]->pose.y = 1000;
-    }
-    for (i = 3; i < 5; i++)
-    {   
-        printf("%d ",i);
-        flist[i]->dim=0;
-        flist[i]->value[0] = 800;
-        flist[i]->limit[0] = 200*i;
-        flist[i]->limit[1] = 200*(i+1);
-        flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
-        flist[i]->pose.y = 1000;
-    }
-    for (i = 5; i < 6; i++)
-    {   
-        printf("%d ",i);
-        flist[i]->dim=2;
-        flist[i]->value[0] = 800;
-        flist[i]->value[1] = 0;
-        flist[i]->value[2] = -0.003;
-        flist[i]->limit[0] = 200*i;
-        flist[i]->limit[1] = 200*(i)+200;
-        flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
-        flist[i]->pose.y = 1000;
-    }
-    for (i = 6; i < FEATURENUM; i++)
-    {   
-        printf("%d ",i);
-        flist[i]->dim=0;
-        flist[i]->value[0] = 800;
-        flist[i]->limit[0] = 200*(i+1);
-        flist[i]->limit[1] = 200*(i+2);
-        flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
-        flist[i]->pose.y = 1000;
-    }
+    /*장애물 리스트*/
+    second(3,checkf,-0.003,0);
+    first(6,checkf,-0.3);
 
-    printf("\n");
+    for (i = 0; i < FEATURENUM; i++)
+    {
+        if(checkf[i]==0)
+            zero(i,checkf);
+    }
+    
+}
+
+
+void initgamestate(void){
+    GAME_END = false;
 }

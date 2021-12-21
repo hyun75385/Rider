@@ -10,6 +10,8 @@ extern App app;
 extern BIKE bike;
 extern Feature ** flist;
 extern int fnum;
+extern bool GAME_END;
+
 
 void ActGame(void);
 void ActBike(void);

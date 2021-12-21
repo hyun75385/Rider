@@ -11,6 +11,8 @@ extern App app;
 extern BIKE bike;
 extern Feature ** flist;
 extern int fnum;
+extern bool GAME_END;
+
 
 /**
  @brief 외부 입력을 받아 적절한 동작을 취하도록 한다.

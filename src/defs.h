@@ -31,17 +31,17 @@
 
 #define PLAYER_WIDTH 24     /**< 플레이어 객체 너비(픽셀)*/
 #define PLAYER_HEIGHT 24    /**< 플레이어 객체 높이(픽셀)*/
-#define PLAYER_SPEED 0.1     /**< 가속도*/
+#define PLAYER_SPEED 0.2     /**< 가속도*/
 #define PLAYER_BRAKE 0.01  /*브레이크*/
 #define PLAYER_MAXSPEED 20   /**< 최대 속도*/
-#define PLAYER_ROT 0.0001     /**< 각가속도*/
-#define PLAYER_MAXROT 0.01   /**< 최대 각속도*/
+#define PLAYER_ROT 0.005   /**< 각가속도*/
+#define PLAYER_MAXROT 0.1   /**< 최대 각속도*/
 
 
 #define GRAVITY -0.1
-#define E 0.2 //충돌계수
+#define E 0.3//충돌계수
 #define PI 3.14159265359
-#define GAP 5
+#define GAP 4
 
 #define abs(X) (((X)>=0) ? (X) : (-(X)))
 
@@ -60,6 +60,8 @@ typedef struct vecter{
     double x;
     double y;
 }Vecter;
+
+
 
 
 typedef struct circle
@@ -84,6 +86,8 @@ typedef struct rect{
 
 
 typedef struct bike{
+    SDL_Texture * texture;
+    SDL_Rect size;
     Vecter pose;
     Vecter vel;
     Vecter acc;

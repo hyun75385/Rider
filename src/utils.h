@@ -9,6 +9,8 @@ extern App app;
 extern BIKE bike;
 extern Feature ** flist;
 extern int fnum;
+extern bool GAME_END;
+
 
 void update_Tire(BIKE *bike);
 void update_Body(BIKE *bike);
@@ -25,5 +27,9 @@ Vecter vecter_mul(const Vecter * v1, double m);
 Vecter bounce(const Vecter * v1, const Vecter * normal);
 void update_Center_theta(BIKE * bike);
 Vecter WxR(double w, const Vecter *  r);
+void ground(int i,int chechf[]);
+void zero(int i,int chechf[]);
+void first(int i,int chechf[],double);
+void second(int i,int chechf[],double,double);
 
 #endif
