@@ -77,7 +77,6 @@ void InitBike(void)
     update_Tire(&bike);
     return;
 }
-
 void InitFeature(void)
 {
     int i = 0, last, checkf[FEATURENUM]={0};
@@ -94,20 +93,35 @@ void InitFeature(void)
             exit(0);
     }
     /*장애물 리스트*/
-    second(3,checkf,-0.003,0);
-    second(9,checkf,-0.006,0);
-
-    first(6,checkf,-0.3);
+    second(2,checkf,-0.001,0,600);
+    second(5,checkf,-0.001,0,600);
+    second(9,checkf,-0.001,0,600);
+    ground(10,checkf);
+    second(12,checkf,-0.001,0,600);
+    first(15,checkf,-0.4,600);
+    first(16,checkf,0.4,480);   
+    second(18,checkf,-0.0015,0,600);
+    second(19,checkf,0.0015,0,465); 
+    first(21,checkf,-0.5,600);
+    first(23,checkf,-0.5,600);
+    second(25,checkf,-0.0018,0,600);
+    zero(26,checkf,490);
+    zero(27,checkf,550);
+    first(28,checkf,-0.5,600);
+    first(29,checkf,0.5,450);
+    second(30,checkf,-0.0025,0,600);
+    ground(31,checkf);
 
 
 
     for (i = 0; i < FEATURENUM; i++)
     {
         if(checkf[i]==0)
-            zero(i,checkf);
+            zero(i,checkf,600);
     }
     
 }
+
 
 void initgamestate(void){
     GAME_END = false;

@@ -167,53 +167,52 @@ Vecter WxR(double w, const Vecter *r)
     result.y = (w) * (r->x);
     return result;
 }
-
 void ground(int i,int chechf[]){
     if(chechf[i]!=0)
         return;
     chechf[i]=1;
     flist[i]->dim=0;
-    flist[i]->value[0] = 2000;
-    flist[i]->limit[0] = 200*i;
-    flist[i]->limit[1] = 200*(i+1);
+    flist[i]->value[0] = 1000;
+    flist[i]->limit[0] = 300*i;
+    flist[i]->limit[1] = 300*(i+1);
     flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
     flist[i]->pose.y = 1000;
 }
 
-void zero(int i,int chechf[]){
+void zero(int i,int chechf[],double val0){
     if(chechf[i]!=0)
         return;
     chechf[i]=1;
     flist[i]->dim=0;
-    flist[i]->value[0] = 800;
-    flist[i]->limit[0] = 200*i;
-    flist[i]->limit[1] = 200*(i+1);
+    flist[i]->value[0] = val0;
+    flist[i]->limit[0] = 300*i;
+    flist[i]->limit[1] = 300*(i+1);
     flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
     flist[i]->pose.y = 1000;
 }
-void first(int i,int chechf[],double val1){   
+void first(int i,int chechf[],double val1, double val0){   
     if(chechf[i]!=0)
         return;
     chechf[i]=1;
     flist[i]->dim=1;
-    flist[i]->value[0] = 800;
+    flist[i]->value[0] = val0;
     flist[i]->value[1] = val1;
-    flist[i]->limit[0] = 200*i;
-    flist[i]->limit[1] = 200*(i+1);
+    flist[i]->limit[0] = 300*i;
+    flist[i]->limit[1] = 300*(i+1);
     flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
     flist[i]->pose.y = 1000;
 }
 
-void second(int i,int chechf[],double val2, double val1){
+void second(int i,int chechf[],double val2, double val1, double val0){
     if(chechf[i]!=0)
         return;
     chechf[i]=1;
     flist[i]->dim=2;
-    flist[i]->value[0] = 800;
+    flist[i]->value[0] = val0;
     flist[i]->value[1] = val1;
     flist[i]->value[2] = val2;
-    flist[i]->limit[0] = 200*i;
-    flist[i]->limit[1] = 200*(i)+200;
+    flist[i]->limit[0] = 300*i;
+    flist[i]->limit[1] = 300*(i)+300;
     flist[i]->pose.x = (flist[i]->limit[0] +flist[i]->limit[1])/2;
     flist[i]->pose.y = 1000;
 }
